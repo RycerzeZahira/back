@@ -35,9 +35,9 @@ public class MailSenderController {
     @PostMapping
     public ResponseEntity sendMail(Principal principal, @RequestBody MailRequest mailRequest) {
         Context context = new Context();
-        context.setVariable("header", "ListIt");
-        context.setVariable("title", "Nowa lista");
-        context.setVariable("description", "Dziękujemy za skorzystanie z aplikacji - ListIt\n" + mailRequest.getContent());
+        context.setVariable("header", "Witaj " + principal.getName() + "!");
+        context.setVariable("title", "Oto twoja lista");
+        context.setVariable("description", mailRequest.getContent());
 
         String body = templateEngine.process("mail", context);
 
