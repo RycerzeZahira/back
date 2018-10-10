@@ -2,20 +2,19 @@ package politechnika.lodzka.qrcode.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import politechnika.lodzka.qrcode.model.User;
 import politechnika.lodzka.qrcode.repository.UserRepository;
+import politechnika.lodzka.qrcode.service.CustomUserDetailsService;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
+    public CustomUserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

@@ -11,7 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
-public class MailSenderServiceImpl implements MailSenderService {
+class MailSenderServiceImpl implements MailSenderService {
 
     @Value("${mail.sender}")
     private String mailSender;
@@ -21,7 +21,6 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender javaMailSender;
 
-    @Autowired
     public MailSenderServiceImpl(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }

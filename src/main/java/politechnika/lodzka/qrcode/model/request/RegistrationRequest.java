@@ -11,16 +11,6 @@ import javax.validation.constraints.Size;
 public class RegistrationRequest {
     @NotNull
     @NotEmpty
-    @Size(min = 2, max = 255)
-    private String firstName;
-
-    @NotNull
-    @NotEmpty
-    @Size(min = 2, max = 255)
-    private String lastName;
-
-    @NotNull
-    @NotEmpty
     @Email
     private String email;
 

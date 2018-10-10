@@ -25,7 +25,6 @@ public class UserController {
     private final AuthService authService;
     private final UserRepository userRepository;
 
-    @Autowired
     public UserController(AuthService authService, UserRepository userRepository) {
         this.authService = authService;
         this.userRepository = userRepository;

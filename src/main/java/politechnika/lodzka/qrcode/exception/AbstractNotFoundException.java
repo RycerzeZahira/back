@@ -1,11 +1,11 @@
 package politechnika.lodzka.qrcode.exception;
 
-public class AbstractNotFoundException extends AppException {
-    public AbstractNotFoundException(String message) {
-        super(message);
-    }
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-    public AbstractNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class AbstractNotFoundException extends AppException {
+    public AbstractNotFoundException(Class clazz, String code) {
+        super(new StringBuilder(clazz.getSimpleName()).append(" code: ").append(code).append(" not found exception").toString());
     }
 }

@@ -25,7 +25,6 @@ public class MailSenderController {
     private final TemplateEngine templateEngine;
     private final UserRepository userRepository;
 
-    @Autowired
     public MailSenderController(MailSenderService mailSenderService, TemplateEngine templateEngine, UserRepository userRepository) {
         this.mailSenderService = mailSenderService;
         this.templateEngine = templateEngine;

@@ -16,7 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import politechnika.lodzka.qrcode.security.JwtAuthenticationEntryPoint;
 import politechnika.lodzka.qrcode.security.JwtAuthenticationFilter;
-import politechnika.lodzka.qrcode.service.Impl.UserDetailsServiceImpl;
+import politechnika.lodzka.qrcode.security.JwtTokenProvider;
+import politechnika.lodzka.qrcode.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -27,18 +28,19 @@ import politechnika.lodzka.qrcode.service.Impl.UserDetailsServiceImpl;
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImpl customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    public SecurityConfig(UserDetailsServiceImpl customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler){
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler, JwtTokenProvider jwtTokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        return new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService);
     }
 
     @Override

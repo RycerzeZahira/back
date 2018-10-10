@@ -1,11 +1,10 @@
 package politechnika.lodzka.qrcode.exception;
 
-public class UserNotFoundException extends AbstractNotFoundException {
-    public UserNotFoundException(String message) {
-        super(message);
-    }
+import politechnika.lodzka.qrcode.model.User;
 
-    public UserNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+public class UserNotFoundException extends AbstractNotFoundException {
+
+    public UserNotFoundException(String code) {
+        super(User.class, code);
     }
 }

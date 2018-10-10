@@ -1,0 +1,104 @@
+package politechnika.lodzka.qrcode.model.scheme;
+
+import com.google.common.util.concurrent.AtomicDouble;
+import lombok.Data;
+import politechnika.lodzka.qrcode.exception.AppParseException;
+import politechnika.lodzka.qrcode.exception.scheme.TypeException;
+import politechnika.lodzka.qrcode.model.BaseEntity;
+import politechnika.lodzka.qrcode.model.User;
+
+import javax.persistence.*;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Data
+@Entity
+@Table(name = "ANSWER_T")
+public class Answer extends BaseEntity {
+    @OneToOne
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = true)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "SCHEME_ID", referencedColumnName = "ID")
+    private Element scheme;
+
+    @ManyToOne
+    @JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")
+    private Answer parent;
+
+    @Column(name = "STRING_VALUE")
+    private String stringValue;
+
+    @Column(name = "BOOlEAN_VALUE")
+    private Boolean booleanValue;
+
+    @Column(name = "LONG_VALUE")
+    private Long longValue;
+
+    @Column(name = "DOUBLE_VALUE")
+    private Double doubleValue;
+
+    @Column(name = "DATE_VALUE")
+    private Date dateValue;
+
+    @Column(name = "OBJECT_ID_VALUE")
+    private Long objectIdValue;
+
+    public Object getValue() {
+        Class clazz = scheme.getType().getClazz();
+        if (clazz == String.class) {
+            return this.stringValue;
+        } else if (clazz == AtomicLong.class) {
+            return this.longValue;
+        } else if (clazz == AtomicBoolean.class) {
+            return this.booleanValue;
+        } else if (clazz == AtomicDouble.class) {
+            return this.doubleValue;
+        } else if (clazz == Date.class) {
+            return this.dateValue;
+        } else if (scheme.isObjectValue()) {
+            return this.objectIdValue;
+        }
+        throw new TypeException("No class type defined: " + clazz.getName());
+    }
+
+    public void setValue(Object value) {
+        TypeClass type = scheme.getType();
+        try {
+            switch (type) {
+                case STRING:
+                    this.stringValue = (String) value;
+                    break;
+                case BOOLEAN:
+                    this.booleanValue = (Boolean) value;
+                    break;
+                case LONG:
+                    this.longValue = (Long) value;
+                    break;
+                case DOUBLE:
+                    this.doubleValue = (Double) value;
+                    break;
+                case GROUP:
+                    break;
+                case DATE:
+                    this.dateValue = new SimpleDateFormat("yyyy-MM-dd HH:mmZ").parse((String) value);
+                    break;
+                default:
+                    this.objectIdValue = NumberFormat.getInstance().parse(String.valueOf(value)).longValue();
+                    break;
+            }
+        } catch (ParseException ex) {
+            throw new AppParseException(ex.getMessage());
+        }
+    }
+
+    @Transient
+    public String getParentCode() {
+        return this.getParent().getScheme().getCode();
+    }
+}

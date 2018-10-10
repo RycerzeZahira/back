@@ -17,52 +17,40 @@ import java.util.Date;
 @Data
 @Builder
 @AllArgsConstructor
-public class User implements UserDetails {
-    @Column
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Long id;
+@Table(name = "USER_T")
+public class User extends BaseEntity implements UserDetails {
 
-    @Column(nullable = false)
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     @JsonIgnore
     private String password;
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    @Column
+    @Column(name = "CREATED")
     @JsonIgnore
     private Date created;
 
-    @Column
+    @Column(name = "UPDATED")
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @JsonIgnore
     private Date updated;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column
+    @Column(name = "EXPIRED_DATE")
     @JsonIgnore
-    private Date expiriedDate;
+    private Date expiredDate;
 
-    @Column(nullable = false)
+    @Column(name = "IS_LOCKED", nullable = false)
     private Boolean isLocked;
 
     public User(String email, String firstName, String lastName, String password) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.password = password;
-        this.expiriedDate = null;
+        this.expiredDate = null;
         this.isLocked = false;
     }
 
@@ -81,7 +69,7 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
-        if (expiriedDate == null || new Date().before(this.expiriedDate)) {
+        if (expiredDate == null || new Date().before(this.expiredDate)) {
             return true;
         }
         return false;
