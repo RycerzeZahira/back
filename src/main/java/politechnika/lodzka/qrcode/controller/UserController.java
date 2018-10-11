@@ -1,5 +1,8 @@
 package politechnika.lodzka.qrcode.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,6 +34,10 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+    @ApiOperation(value = "Signing in user", notes = "Returns authentication token")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful Login"),
+            @ApiResponse(code = 401, message = "Wrong data")})
     @PostMapping(value = "/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         Authentication authentication = authService.auth(authenticationRequest);
@@ -39,11 +46,15 @@ public class UserController {
         return ResponseEntity.ok(new JwtAuthenticationResponse(tokenQuery));
     }
 
+    @ApiOperation(value = "Getting user profile", notes = "Returns user profile")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful user's profile getting"),
+            @ApiResponse(code = 401, message = "Wrong authentication token"),
+            @ApiResponse(code = 404, message = "User not found")})
     @GetMapping(value = "/profile")
-    public User getUserProfile(Principal principal){
-        User user = userRepository.getUserByEmail(principal.getName())
-                .orElseThrow(() -> new UserNotFoundException("Could not found user"));
+    public User getUserProfile(Principal principal) {
 
-        return user;
+        return userRepository.getUserByEmail(principal.getName())
+                .orElseThrow(() -> new UserNotFoundException("Could not found user"));
     }
 }

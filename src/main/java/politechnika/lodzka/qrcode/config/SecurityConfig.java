@@ -27,11 +27,37 @@ import politechnika.lodzka.qrcode.service.Impl.UserDetailsServiceImpl;
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String[] AUTH_WHITELIST = {
+            //public endpoints
+            "/",
+            "/favicon.ico",
+            "/**/*.png",
+            "/**/*.gif",
+            "/**/*.svg",
+            "/**/*.jpg",
+            "/**/*.html",
+            "/**/*.css",
+            "/**/*.js",
+            "/h2/*",
+            "/registration",
+            "/user/login",
+
+            //Swagger
+            "/docs",
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
+
     private final UserDetailsServiceImpl customUserDetailsService;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Autowired
-    public SecurityConfig(UserDetailsServiceImpl customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler){
+    public SecurityConfig(UserDetailsServiceImpl customUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler) {
         this.customUserDetailsService = customUserDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
     }
@@ -75,21 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/h2/*")
-                .permitAll()
-                .antMatchers("/registration")
-                .permitAll()
-                .antMatchers("/user/login")
+                .antMatchers(AUTH_WHITELIST)
                 .permitAll()
                 .anyRequest()
                 .authenticated();
