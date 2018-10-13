@@ -12,6 +12,7 @@ import politechnika.lodzka.qrcode.model.User;
 import politechnika.lodzka.qrcode.model.request.CreateFormRequest;
 import politechnika.lodzka.qrcode.model.request.scheme.ElementRequest;
 import politechnika.lodzka.qrcode.model.request.scheme.SaveAnswersRequest;
+import politechnika.lodzka.qrcode.model.response.AnswerResponse;
 import politechnika.lodzka.qrcode.model.scheme.Answer;
 import politechnika.lodzka.qrcode.model.scheme.Element;
 import politechnika.lodzka.qrcode.model.scheme.SchemeGroup;
@@ -67,16 +68,57 @@ class FormServiceImpl implements FormService {
             throw new SchemeNotValidException("Scheme is not valid exception!");
         }
 
-        Collection<Answer> answers = assembly((SchemeGroup) form.getRoot(), request.getRoot(), authService.getCurrentUser());
+        Collection<Answer> answers = assembly((SchemeGroup) form.getRoot(), request.getRoot(), authService.getCurrentUser(), form);
         answersRepository.saveAll(answers);
     }
 
-    public Collection<Answer> assembly(SchemeGroup root, ElementRequest request, User user) {
+    @Override
+    public Collection<AnswerResponse> getAnswers(String formCode) {
+        Collection<Answer> answers = answersRepository.findAnswerByFormCode(formCode);
+
+        Collection<AnswerResponse> result = new ArrayList<>();
+
+        for (Answer answer : answers) {
+            result.add(assemblyAnswer(answer));
+        }
+
+        return result;
+    }
+
+    private AnswerResponse assemblyAnswer(Answer answer) {
+        AnswerResponse result = new AnswerResponse();
+        result.setCode(answer.getScheme().getCode());
+        result.setName(answer.getScheme().getName());
+        result.setParent(null);
+        result.setValue(assemblyAnswerGroup(answer.getChilds()));
+        return result;
+    }
+
+    private Collection<AnswerResponse> assemblyAnswerGroup(Collection<Answer> childs) {
+        Collection<AnswerResponse> result = new ArrayList<>();
+        for (Answer child : childs) {
+            if (isGroup(child.getScheme())) {
+                result.addAll(assemblyAnswerGroup(child.getChilds()));
+            } else {
+                AnswerResponse answerResponse = new AnswerResponse();
+                answerResponse.setName(child.getScheme().getName());
+                answerResponse.setCode(child.getScheme().getCode());
+                answerResponse.setValue(child.getValue());
+                result.add(answerResponse);
+            }
+        }
+
+        return result;
+    }
+
+    public Collection<Answer> assembly(SchemeGroup root, ElementRequest request, User user, Form form) {
         Collection<Answer> answers = new ArrayList<>();
         Answer rootAnswer = new Answer();
         rootAnswer.setScheme(root);
         rootAnswer.setUser(user);
         rootAnswer.setParent(null);
+        rootAnswer.setForm(form);
+        answers.add(rootAnswer);
         answers.addAll(assemblyGroup(root, request, rootAnswer));
         return answers;
     }
@@ -92,6 +134,7 @@ class FormServiceImpl implements FormService {
                 answers.addAll(assemblyGroup((SchemeGroup) scheme, req, answer));
             } else {
                 answer.setValue(req.getElement());
+                answers.add(answer);
             }
         }
         return answers;

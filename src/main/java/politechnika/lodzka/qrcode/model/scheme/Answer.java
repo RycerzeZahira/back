@@ -1,16 +1,20 @@
 package politechnika.lodzka.qrcode.model.scheme;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Data;
 import politechnika.lodzka.qrcode.exception.AppParseException;
 import politechnika.lodzka.qrcode.exception.scheme.TypeException;
 import politechnika.lodzka.qrcode.model.BaseEntity;
+import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.User;
 
 import javax.persistence.*;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,6 +31,16 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "SCHEME_ID", referencedColumnName = "ID")
     private Element scheme;
 
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "FORM_ID", referencedColumnName = "ID")
+    private Form form;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "parent")
+    private Collection<Answer> childs;
+
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")
     private Answer parent;

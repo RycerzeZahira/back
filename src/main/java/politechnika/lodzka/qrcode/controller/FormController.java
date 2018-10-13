@@ -44,4 +44,9 @@ public class FormController {
         service.saveAnswer(request);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
+
+    @GetMapping(value = "/answers/{formCode}")
+    public ResponseEntity getAnswers(@PathVariable String formCode) {
+        return ResponseEntity.ok(service.getAnswers(formCode));
+    }
 }
