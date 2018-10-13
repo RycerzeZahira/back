@@ -1,5 +1,8 @@
 package politechnika.lodzka.qrcode.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,10 @@ public class RegistrationController {
         this.registrationService = registrationService;
     }
 
+    @ApiOperation(value = "Signing up user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful registration"),
+            @ApiResponse(code = 400, message = "Invalid request body")})
     @PostMapping
     public ResponseEntity userRegistration(@RequestBody @Valid final RegistrationRequest registrationRequest) {
         registrationService.registerUser(registrationRequest);
