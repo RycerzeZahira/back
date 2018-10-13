@@ -40,7 +40,7 @@ public class FormController {
     }
 
     @PostMapping(value = "/save")
-    public ResponseEntity saveAnswers(@Valid @RequestBody SaveAnswersRequest request){
+    public ResponseEntity saveAnswers(@Valid @RequestBody SaveAnswersRequest request) {
         service.saveAnswer(request);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }

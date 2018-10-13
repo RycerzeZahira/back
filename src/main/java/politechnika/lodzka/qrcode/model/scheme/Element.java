@@ -18,7 +18,7 @@ public class Element extends SchemeInformation {
         this.type = type;
     }
 
-    public Element(String code){
+    public Element(String code) {
         super(code);
     }
 

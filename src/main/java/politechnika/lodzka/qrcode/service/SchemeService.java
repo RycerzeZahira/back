@@ -1,6 +1,5 @@
 package politechnika.lodzka.qrcode.service;
 
-import politechnika.lodzka.qrcode.model.Group;
 import politechnika.lodzka.qrcode.model.request.scheme.ElementRequest;
 import politechnika.lodzka.qrcode.model.scheme.Element;
 import politechnika.lodzka.qrcode.model.scheme.TypeClass;

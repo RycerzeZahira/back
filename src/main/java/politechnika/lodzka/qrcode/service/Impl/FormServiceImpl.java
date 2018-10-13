@@ -83,12 +83,12 @@ class FormServiceImpl implements FormService {
 
     private Collection<Answer> assemblyGroup(SchemeGroup root, ElementRequest request, Answer parent) {
         Collection<Answer> answers = new ArrayList<>();
-        for (ElementRequest req : (Collection<ElementRequest>)request.getElement()){
+        for (ElementRequest req : (Collection<ElementRequest>) request.getElement()) {
             Element scheme = root.getElements().stream().filter(r -> req.getCode().equals(r.getCode())).findFirst().get();
             Answer answer = new Answer();
             answer.setParent(parent);
             answer.setScheme(scheme);
-            if (isGroup(scheme)){
+            if (isGroup(scheme)) {
                 answers.addAll(assemblyGroup((SchemeGroup) scheme, req, answer));
             } else {
                 answer.setValue(req.getElement());

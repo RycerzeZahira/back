@@ -6,6 +6,8 @@ import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
 
 public interface AuthService {
     Authentication auth(AuthenticationRequest authenticationRequest);
+
     String getAuthenticationToken(Authentication authentication);
+
     User getCurrentUser();
 }

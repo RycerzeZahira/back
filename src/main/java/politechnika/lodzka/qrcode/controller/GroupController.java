@@ -33,7 +33,7 @@ public class GroupController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity getMyGroups(){
+    public ResponseEntity getMyGroups() {
         return ResponseEntity.ok(service.getCurrentUserGroups());
     }
 }

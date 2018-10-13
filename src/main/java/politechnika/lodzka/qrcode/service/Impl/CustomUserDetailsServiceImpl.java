@@ -1,6 +1,5 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     @Transactional
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found for id: " +  id));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found for id: " + id));
 
         return user;
     }

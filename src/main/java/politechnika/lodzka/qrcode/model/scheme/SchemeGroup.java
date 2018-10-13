@@ -26,7 +26,7 @@ public class SchemeGroup extends Element {
         super(TypeClass.GROUP, code, name, null);
     }
 
-    public SchemeGroup(String code){
+    public SchemeGroup(String code) {
         super(code);
     }
 

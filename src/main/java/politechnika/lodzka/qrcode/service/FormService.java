@@ -6,5 +6,6 @@ import politechnika.lodzka.qrcode.model.request.scheme.SaveAnswersRequest;
 
 public interface FormService {
     Form create(CreateFormRequest request);
+
     void saveAnswer(SaveAnswersRequest request);
 }

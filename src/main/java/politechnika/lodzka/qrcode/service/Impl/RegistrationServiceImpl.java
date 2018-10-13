@@ -1,6 +1,5 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public void registerUser(final RegistrationRequest registrationRequest) {
-        if(userRepository.existsByEmail(registrationRequest.getEmail())){
+        if (userRepository.existsByEmail(registrationRequest.getEmail())) {
             throw new UserAlreadyExistsException("User with provided e-mail already exists");
         }
 

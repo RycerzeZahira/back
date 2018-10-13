@@ -5,8 +5,6 @@ import politechnika.lodzka.qrcode.model.request.scheme.ElementRequest;
 import politechnika.lodzka.qrcode.model.scheme.Element;
 import politechnika.lodzka.qrcode.model.scheme.SchemeGroup;
 import politechnika.lodzka.qrcode.model.scheme.TypeClass;
-import politechnika.lodzka.qrcode.repository.FormRepository;
-import politechnika.lodzka.qrcode.repository.GroupRepository;
 import politechnika.lodzka.qrcode.service.SchemeService;
 
 import java.util.Arrays;
@@ -14,14 +12,6 @@ import java.util.Collection;
 
 @Service
 class SchemeServiceImpl implements SchemeService {
-    private final GroupRepository groupRepository;
-    private final FormRepository formRepository;
-
-    SchemeServiceImpl(GroupRepository groupRepository, FormRepository formRepository) {
-        this.groupRepository = groupRepository;
-        this.formRepository = formRepository;
-    }
-
     @Override
     public Collection<TypeClass> getAvailableFields() {
         return Arrays.asList(TypeClass.values());
