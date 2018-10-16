@@ -1,6 +1,5 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -11,17 +10,14 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
-public class MailSenderServiceImpl implements MailSenderService {
+class MailSenderServiceImpl implements MailSenderService {
 
+    private final JavaMailSender javaMailSender;
     @Value("${mail.sender}")
     private String mailSender;
-
     @Value("${mail.subject}")
     private String mailSubject;
 
-    private final JavaMailSender javaMailSender;
-
-    @Autowired
     public MailSenderServiceImpl(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }

@@ -3,7 +3,6 @@ package politechnika.lodzka.qrcode.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,7 +27,6 @@ public class MailSenderController {
     private final TemplateEngine templateEngine;
     private final UserRepository userRepository;
 
-    @Autowired
     public MailSenderController(MailSenderService mailSenderService, TemplateEngine templateEngine, UserRepository userRepository) {
         this.mailSenderService = mailSenderService;
         this.templateEngine = templateEngine;

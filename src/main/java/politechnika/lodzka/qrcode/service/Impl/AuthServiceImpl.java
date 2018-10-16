@@ -1,35 +1,31 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import politechnika.lodzka.qrcode.exception.UserNotFoundException;
+import politechnika.lodzka.qrcode.model.User;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.security.JwtTokenProvider;
 import politechnika.lodzka.qrcode.service.AuthService;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+class AuthServiceImpl implements AuthService {
 
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
     private final JwtTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public AuthServiceImpl(PasswordEncoder passwordEncoder,
-                           UserRepository userRepository,
-                           JwtTokenProvider tokenProvider,
-                           AuthenticationManager authenticationManager){
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
+    public AuthServiceImpl(JwtTokenProvider tokenProvider, AuthenticationManager authenticationManager, UserRepository userRepository) {
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
     }
+
     @Override
     public Authentication auth(AuthenticationRequest authenticationRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -46,5 +42,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public String getAuthenticationToken(Authentication authentication) {
         return tokenProvider.generateToken(authentication);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.getUserByEmail(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException(userDetails.getUsername()));
     }
 }

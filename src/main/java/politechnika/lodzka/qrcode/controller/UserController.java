@@ -3,14 +3,9 @@ package politechnika.lodzka.qrcode.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
 import politechnika.lodzka.qrcode.model.User;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
@@ -28,7 +23,6 @@ public class UserController {
     private final AuthService authService;
     private final UserRepository userRepository;
 
-    @Autowired
     public UserController(AuthService authService, UserRepository userRepository) {
         this.authService = authService;
         this.userRepository = userRepository;
