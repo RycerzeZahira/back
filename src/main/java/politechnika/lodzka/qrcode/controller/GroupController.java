@@ -27,7 +27,7 @@ public class GroupController {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/code")
+    @GetMapping(value = "/{code}")
     public ResponseEntity getGroup(@PathVariable String code) {
         return ResponseEntity.ok(repository.findByCode(code).orElseThrow(() -> new GroupNotFoundException(code)));
     }
