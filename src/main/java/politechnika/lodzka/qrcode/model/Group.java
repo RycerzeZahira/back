@@ -3,6 +3,7 @@ package politechnika.lodzka.qrcode.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import politechnika.lodzka.qrcode.model.user.User;
 
 import javax.persistence.*;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package politechnika.lodzka.qrcode.model;
+package politechnika.lodzka.qrcode.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import politechnika.lodzka.qrcode.model.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -47,6 +48,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "IS_LOCKED", nullable = false)
     private Boolean isLocked;
 
+    @Column(name = "IS_ACTIVE", nullable = false)
+    private AccountStatus status;
+
     public User(String email, String firstName, String lastName, String password) {
         this.email = email;
         this.password = password;
@@ -69,10 +73,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
-        if (expiredDate == null || new Date().before(this.expiredDate)) {
-            return true;
-        }
-        return false;
+        return expiredDate == null || new Date().before(this.expiredDate);
     }
 
     @Override

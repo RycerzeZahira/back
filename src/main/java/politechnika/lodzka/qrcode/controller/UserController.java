@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
 import politechnika.lodzka.qrcode.model.response.JwtAuthenticationResponse;
 import politechnika.lodzka.qrcode.repository.UserRepository;

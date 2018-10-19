@@ -1,7 +1,7 @@
 package politechnika.lodzka.qrcode.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.User;
 
 import java.util.Optional;
 

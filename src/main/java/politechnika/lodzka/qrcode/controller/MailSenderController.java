@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.MailType;
 import politechnika.lodzka.qrcode.model.request.MailRequest;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.service.MailSenderService;
 
@@ -40,20 +40,16 @@ public class MailSenderController {
             @ApiResponse(code = 404, message = "Couldn't find user")})
     @PostMapping
     public ResponseEntity sendMail(Principal principal, @RequestBody MailRequest mailRequest) {
-        Context context = new Context();
-        context.setVariable("header", "Witaj " + principal.getName() + "!");
-        context.setVariable("title", "Oto twoja lista");
-        context.setVariable("description", mailRequest.getContent());
-
-        String body = templateEngine.process("mail", context);
+        String mailContent = mailSenderService.createEmailContent(new StringBuilder().append("Witaj ").append(principal.getName()).append("!").toString(),
+                "Oto Twoja lista: ", mailRequest.getContent(), MailType.LIST.getMailType());
 
         if (mailRequest.getReceiver() == null) {
             User user = userRepository.getUserByEmail(principal.getName())
                     .orElseThrow(() -> new UserNotFoundException("Could not found user"));
 
-            mailSenderService.sendEmail(user.getEmail(), body);
+            mailSenderService.sendEmail(user.getEmail(), mailContent);
         } else {
-            mailSenderService.sendEmail(mailRequest.getReceiver(), body);
+            mailSenderService.sendEmail(mailRequest.getReceiver(), mailContent);
         }
 
         return new ResponseEntity(HttpStatus.OK);

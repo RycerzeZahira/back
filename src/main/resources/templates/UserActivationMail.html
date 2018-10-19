@@ -21,10 +21,12 @@
         <td height="100" align="center"><h1 th:text="${title}">title</h1></td>
     </tr>
     <tr bgcolor="ffffff">
-        <td height="100" align="center"><h3 th:text="${description}">description</h3></td>
+        <td height="100" align="center">
+            <a th:href="@{'http://localhost:8081/registration/activate/' + ${description}}">Link aktywacyjny</a>
+        </td>
     </tr>
     <tr>
-        <td height="50" align="center"><p>Dziękujemy za skorzystanie z aplikacji - ListIt</p></td>
+        <td height="50" align="center"><p>ListIt</p></td>
     </tr>
 </table>
 </body>
