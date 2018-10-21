@@ -3,14 +3,17 @@ package politechnika.lodzka.qrcode.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.request.RegistrationRequest;
 import politechnika.lodzka.qrcode.service.RegistrationService;
 
@@ -31,8 +34,8 @@ public class RegistrationController {
             @ApiResponse(code = 201, message = "Successful registration"),
             @ApiResponse(code = 400, message = "Invalid request body")})
     @PostMapping
-    public ResponseEntity userRegistration(@RequestBody @Valid final RegistrationRequest registrationRequest) {
-        registrationService.registerUser(registrationRequest);
+    public ResponseEntity userRegistration(@RequestBody@Valid final RegistrationRequest registrationRequest, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) final String language) {
+        registrationService.registerUser(registrationRequest, Language.fromString(language));
 
         return new ResponseEntity(HttpStatus.CREATED);
     }

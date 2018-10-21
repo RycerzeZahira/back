@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:remove="all">ListIt</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>ListIt</title>
 
-    <style type="text/css">
-        h1 {font-size: 26px; color: #444444 !important; font-family: "Lucida Grande", "Lucida Sans", "Lucida Sans Unicode", sans-serif; line-height: 1.5;}
-        h3 {font-size: 12px; color: #444444 !important; font-family: "Lucida Grande", "Lucida Sans", "Lucida Sans Unicode", sans-serif;}
-        p {font-size: 16px; color: #ffffff; font-family: "Lucida Grande", "Lucida Sans", "Lucida Sans Unicode", sans-serif; line-height: 1.5;}
-        table { border: 1px solid #e4e4e4;}
-        a {color: #062b67; text-decoration: none; font-weight: bold;}
-    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet" type="text/css">
 </head>
-<body>
-<table width="100%" cellpadding="0" cellspacing="0" bgcolor="00125b">
+
+<body style="margin: 0; padding: 0;">
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; font-family: 'Josefin Sans', sans-serif; font-size: 24px">
     <tr>
-        <td height="50" align="center"><p th:text="${header}">header</p></td>
-    </tr>
-    <tr bgcolor="ffffff">
-        <td height="100" align="center"><h1 th:text="${title}">title</h1></td>
-    </tr>
-    <tr bgcolor="ffffff">
-        <td height="100" align="center">
-            <a th:href="@{'http://localhost:8081/registration/activate/' + ${description}}">Link aktywacyjny</a>
+        <td align="center" bgcolor="#2d7eff" style="padding: 10px 0 10px 0;">
+            <p th:text="${name}">Hello!</p>
         </td>
     </tr>
-    <tr>
-        <td height="50" align="center"><p>ListIt</p></td>
+    <tr style="font-size: 15px">
+        <td bgcolor="#eaeaea" style="padding: 20px 30px 20px 30px;">
+            <p th:text="${mailDescription}">Thank you for signing up in ListIt.</p>
+        </td>
+    </tr>
+    <tr style="font-size: 15px">
+        <td bgcolor="#777777" style="padding: 20px 30px 20px 30px;">
+            <p th:text="${activationDescription}">Here is your activation link</p>
+            <p>
+                <a th:href="@{'http://localhost:8081/registration/activate/' + ${token}}"><p th:text="${confirmation}">Click here to activate your account</p></a>
+            </p>
+        </td>
     </tr>
 </table>
+
 </body>
 </html>

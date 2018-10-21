@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import politechnika.lodzka.qrcode.exception.UserAlreadyExistsException;
 import politechnika.lodzka.qrcode.model.ActivationToken;
+import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.MailType;
 import politechnika.lodzka.qrcode.model.request.RegistrationRequest;
 import politechnika.lodzka.qrcode.model.user.AccountStatus;
@@ -39,7 +40,7 @@ class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     @Transactional
-    public void registerUser(final RegistrationRequest registrationRequest) {
+    public void registerUser(final RegistrationRequest registrationRequest, final Language language) {
         if (userRepository.existsByEmail(registrationRequest.getEmail())) {
             throw new UserAlreadyExistsException("User with provided e-mail already exists");
         }
@@ -59,10 +60,9 @@ class RegistrationServiceImpl implements RegistrationService {
         activationToken.setUser(user);
 
         tokenRepository.save(activationToken);
-        String mailContent = mailSenderService.createEmailContent("Dziękujemy za rejestrację w serwisie ListIt!",
-                "Oto Twój link aktywacyjny:",
-                token, MailType.ACTIVATION.getMailType());
-        mailSenderService.sendEmail(user.getEmail(), mailContent);
+        String mailContent = createRegistrationEmailContent(language, token, user);
+
+        mailSenderService.sendEmail(user.getEmail(), mailContent, MailType.ACTIVATION, language);
     }
 
     @Override
@@ -71,5 +71,33 @@ class RegistrationServiceImpl implements RegistrationService {
         User user = tokenRepository.getUserIdByActivationToken(token);
         user.setStatus(AccountStatus.ACTIVE);
         tokenRepository.deleteActivationTokenByToken(token);
+    }
+
+    private String createRegistrationEmailContent(Language language, String token, User user){
+        String mailContent;
+        switch (language){
+            case PL:
+                mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Witaj ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
+                        token,
+                        "Dziękujemy za rejestrację w serwisie ListIt",
+                        "Oto Twój link aktywacyjny:",
+                        "Kliknij tutaj, aby potwierdzić adres e-mail");
+                break;
+            case EN:
+                mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
+                        token,
+                        "Thank You for signing up in ListIt",
+                        "Here is your activation link",
+                        "Click here to activate your e-mail address");
+                break;
+            default:
+                mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
+                        token,
+                        "Thank You for signing up in ListIt",
+                        "Here is your activation link",
+                        "Click here to activate your e-mail address");
+        }
+
+        return mailContent;
     }
 }
