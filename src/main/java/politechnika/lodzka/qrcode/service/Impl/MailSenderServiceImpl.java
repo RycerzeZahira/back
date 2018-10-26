@@ -76,7 +76,7 @@ class MailSenderServiceImpl implements MailSenderService {
             case LIST:
                 return chooseMailLanguage(language, LIST_SUBJECT_PL, LIST_SUBJECT_EN);
             default:
-                return "UNKNOWN";
+                return ACTIVATION_SUBJECT_EN;
         }
     }
 
@@ -87,7 +87,7 @@ class MailSenderServiceImpl implements MailSenderService {
             case EN:
                 return subject_en;
             default:
-                return "UNKNOWN";
+                return ACTIVATION_SUBJECT_EN;
         }
     }
 }

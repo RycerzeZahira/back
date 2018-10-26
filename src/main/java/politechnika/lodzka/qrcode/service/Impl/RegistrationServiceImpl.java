@@ -1,6 +1,5 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +23,6 @@ class RegistrationServiceImpl implements RegistrationService {
     private final TokenRepository tokenRepository;
     private final TokenService tokenService;
     private final MailSenderService mailSenderService;
-
-    @Value("${mail.activation.prefix}")
-    private String prefix;
 
     public RegistrationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
                                    TokenRepository tokenRepository, TokenService tokenService,
@@ -73,9 +69,9 @@ class RegistrationServiceImpl implements RegistrationService {
         tokenRepository.deleteActivationTokenByToken(token);
     }
 
-    private String createRegistrationEmailContent(Language language, String token, User user){
+    private String createRegistrationEmailContent(Language language, String token, User user) {
         String mailContent;
-        switch (language){
+        switch (language) {
             case PL:
                 mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Witaj ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
