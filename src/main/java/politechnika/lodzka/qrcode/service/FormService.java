@@ -21,4 +21,6 @@ public interface FormService {
     void clone(CloneFormRequest cloneFormRequest);
 
     void update(UpdateFormRequest request);
+
+    Form findFormByCode(String code);it
 }

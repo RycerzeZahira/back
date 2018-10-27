@@ -118,6 +118,10 @@ class FormServiceImpl implements FormService {
         repository.save(form);
     }
 
+    public Form findFormByCode(String code) {
+        return repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code));
+    }
+
     private AnswerResponse assemblyAnswer(Answer answer) {
         AnswerResponse result = new AnswerResponse();
         result.setCode(answer.getScheme().getCode());
