@@ -1,2 +1,0 @@
-INSERT INTO USER_T (EMAIL, PASSWORD, CREATED, UPDATED, EXPIRED_DATE, IS_LOCKED) values
-  ('admin@example.com', '$2a$04$Y.RrE1egpu.YRhLd0SQ1kehDDa9yZVgwDrT5E.wjj6eD/W6Am1Nfe', '2018-10-11 18:52:00', null, null, false);
