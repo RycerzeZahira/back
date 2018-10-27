@@ -35,4 +35,7 @@ public class Group extends BaseEntity {
 
     @Column(name = "CODE", unique = true, nullable = false)
     private String code;
+
+    @Column(name = "PUBLIC", nullable = false)
+    private boolean publicGroup;
 }

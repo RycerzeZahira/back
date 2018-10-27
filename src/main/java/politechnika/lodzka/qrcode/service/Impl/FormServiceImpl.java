@@ -17,6 +17,7 @@ import politechnika.lodzka.qrcode.model.scheme.Answer;
 import politechnika.lodzka.qrcode.model.scheme.Element;
 import politechnika.lodzka.qrcode.model.scheme.SchemeGroup;
 import politechnika.lodzka.qrcode.model.scheme.TypeClass;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.repository.AnswersRepository;
 import politechnika.lodzka.qrcode.repository.FormRepository;
 import politechnika.lodzka.qrcode.repository.GroupRepository;
@@ -63,7 +64,7 @@ class FormServiceImpl implements FormService {
         User user = authService.getCurrentUser();
 
         if (!form.getGroup().getUsers().contains(user)) {
-            // throw new NoPermissionException(user);
+            throw new NoPermissionException(user);
         }
 
         if (schemeService.validate(form.getRoot(), request.getRoot())) {
@@ -96,6 +97,10 @@ class FormServiceImpl implements FormService {
     }
 
     @Override
+    public Form findByCode(String code) {
+      return repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code));
+    }
+
     public void clone(CloneFormRequest cloneFormRequest) {
         Form form = findFormByCode(cloneFormRequest.getFormCode());
         form.setId(null);
@@ -111,10 +116,6 @@ class FormServiceImpl implements FormService {
         form.setExpiredDate(request.getExpiredDate());
         form.setRoot(request.getRoot());
         repository.save(form);
-    }
-
-    public Form findFormByCode(String code) {
-        return repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code));
     }
 
     private AnswerResponse assemblyAnswer(Answer answer) {

@@ -16,6 +16,8 @@ public interface FormService {
 
     Collection<AnswerResponse> getAnswers(String formCode);
 
+    Form findByCode(String code);
+
     void clone(CloneFormRequest cloneFormRequest);
 
     void update(UpdateFormRequest request);

@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import politechnika.lodzka.qrcode.model.BaseEntity;
+import politechnika.lodzka.qrcode.model.Group;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -51,11 +52,15 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "IS_ACTIVE", nullable = false)
     private AccountStatus status;
 
-    public User(String email, String firstName, String lastName, String password) {
+    @OneToMany(mappedBy = "moderator")
+    private Collection<Group> moderatedGroups;
+
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
         this.expiredDate = null;
         this.isLocked = false;
+        this.status = AccountStatus.INACTIVE;
     }
 
     @Override
