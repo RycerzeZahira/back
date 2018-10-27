@@ -14,4 +14,6 @@ public interface FormService {
     void saveAnswer(SaveAnswersRequest request);
 
     Collection<AnswerResponse> getAnswers(String formCode);
+
+    Form findByCode(String code);
 }

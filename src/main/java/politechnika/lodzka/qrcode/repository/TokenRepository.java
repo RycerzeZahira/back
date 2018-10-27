@@ -11,4 +11,6 @@ public interface TokenRepository extends JpaRepository<ActivationToken, Long> {
     User getUserIdByActivationToken(@Param("token") String token);
 
     void deleteActivationTokenByToken(String token);
+
+    ActivationToken findByUserEmail(String email);
 }
