@@ -8,7 +8,7 @@ import politechnika.lodzka.qrcode.exception.AppParseException;
 import politechnika.lodzka.qrcode.exception.scheme.TypeException;
 import politechnika.lodzka.qrcode.model.BaseEntity;
 import politechnika.lodzka.qrcode.model.Form;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.User;
 
 import javax.persistence.*;
 import java.text.NumberFormat;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Table(name = "ANSWER_T")
 public class Answer extends BaseEntity {
     @OneToOne
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = true)
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private User user;
 
     @ManyToOne

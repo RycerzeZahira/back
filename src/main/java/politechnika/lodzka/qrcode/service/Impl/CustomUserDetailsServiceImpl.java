@@ -4,7 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.service.CustomUserDetailsService;
 
@@ -19,17 +19,13 @@ class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.getUserByEmail(email)
+        return userRepository.getUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
-
-        return user;
     }
 
     @Transactional
     public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found for id: " + id));
-
-        return user;
     }
 }

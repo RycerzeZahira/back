@@ -6,8 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import politechnika.lodzka.qrcode.exception.UserNotActivatedException;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.AccountStatus;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.security.JwtTokenProvider;
@@ -36,6 +38,12 @@ class AuthServiceImpl implements AuthService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        User userOpt = userRepository.getUserByEmail(authenticationRequest.getLogin()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        if(userOpt.getStatus().equals(AccountStatus.INACTIVE)){
+            throw new UserNotActivatedException("User is not activated");
+        }
+
         return authentication;
     }
 

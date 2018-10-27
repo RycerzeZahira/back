@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/**/*.css",
             "/**/*.js",
             "/h2/**",
-            "/registration",
+            "/registration/**",
             "/user/login",
 
             //Swagger

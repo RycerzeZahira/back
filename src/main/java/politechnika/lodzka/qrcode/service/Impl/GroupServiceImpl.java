@@ -3,7 +3,7 @@ package politechnika.lodzka.qrcode.service.Impl;
 import org.springframework.stereotype.Service;
 import politechnika.lodzka.qrcode.Utils;
 import politechnika.lodzka.qrcode.model.Group;
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.model.request.CreateGroupRequest;
 import politechnika.lodzka.qrcode.repository.GroupRepository;
 import politechnika.lodzka.qrcode.service.AuthService;

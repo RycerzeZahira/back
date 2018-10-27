@@ -1,6 +1,6 @@
 package politechnika.lodzka.qrcode.exception;
 
-import politechnika.lodzka.qrcode.model.User;
+import politechnika.lodzka.qrcode.model.user.User;
 
 public class UserNotFoundException extends AbstractNotFoundException {
 
