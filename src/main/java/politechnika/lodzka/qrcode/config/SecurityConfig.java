@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/h2/**",
             "/registration/**",
             "/user/login",
+            "/view/**",
 
             //Swagger
             "/docs",

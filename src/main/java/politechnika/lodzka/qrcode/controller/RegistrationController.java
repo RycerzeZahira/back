@@ -51,9 +51,9 @@ public class RegistrationController {
         try {
             registrationService.activateUser(token);
         } catch (Exception ex) {
-            return "redirect:/InvalidActivation.html";
+            return new StringBuilder().append("redirect:/view/failure?lang=").append(lang).toString();
         }
 
-        return "redirect:/SuccessfulActivation.html";
+        return new StringBuilder().append("redirect:/view/success?lang=").append(lang).toString();
     }
 }
