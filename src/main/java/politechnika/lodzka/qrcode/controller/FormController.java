@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import politechnika.lodzka.qrcode.exception.FormNotFoundException;
+import politechnika.lodzka.qrcode.model.request.CloneFormRequest;
 import politechnika.lodzka.qrcode.model.request.CreateFormRequest;
+import politechnika.lodzka.qrcode.model.request.UpdateFormRequest;
 import politechnika.lodzka.qrcode.model.request.scheme.SaveAnswersRequest;
 import politechnika.lodzka.qrcode.repository.FormRepository;
 import politechnika.lodzka.qrcode.service.FormService;
@@ -29,6 +31,12 @@ public class FormController {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
+    @PutMapping("/update")
+    public ResponseEntity update(@Valid @RequestBody UpdateFormRequest request) {
+        service.update(request);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
     @GetMapping(value = "/{code}")
     public ResponseEntity getSchemeForm(@PathVariable String code) {
         return ResponseEntity.ok(repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code)));
@@ -48,5 +56,11 @@ public class FormController {
     @GetMapping(value = "/answers/{formCode}")
     public ResponseEntity getAnswers(@PathVariable String formCode) {
         return ResponseEntity.ok(service.getAnswers(formCode));
+    }
+
+    @PostMapping(value = "/clone")
+    public ResponseEntity clone(@Valid @RequestBody CloneFormRequest cloneFormRequest) {
+        service.clone(cloneFormRequest);
+        return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 }

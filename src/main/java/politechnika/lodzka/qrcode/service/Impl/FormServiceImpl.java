@@ -2,12 +2,12 @@ package politechnika.lodzka.qrcode.service.Impl;
 
 import org.springframework.stereotype.Service;
 import politechnika.lodzka.qrcode.Utils;
-import politechnika.lodzka.qrcode.exception.FormNotFoundException;
-import politechnika.lodzka.qrcode.exception.GroupNotFoundException;
-import politechnika.lodzka.qrcode.exception.NoPermissionException;
+import politechnika.lodzka.qrcode.exception.*;
 import politechnika.lodzka.qrcode.exception.scheme.SchemeNotValidException;
 import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.Group;
+import politechnika.lodzka.qrcode.model.request.CloneFormRequest;
+import politechnika.lodzka.qrcode.model.request.UpdateFormRequest;
 import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.model.request.CreateFormRequest;
 import politechnika.lodzka.qrcode.model.request.scheme.ElementRequest;
@@ -26,6 +26,8 @@ import politechnika.lodzka.qrcode.service.SchemeService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 
 @Service
 class FormServiceImpl implements FormService {
@@ -68,6 +70,14 @@ class FormServiceImpl implements FormService {
             throw new SchemeNotValidException("Scheme is not valid exception!");
         }
 
+        if (new Date().after(form.getExpiredDate())) {
+            throw new FormExpiredException(form);
+        }
+
+        if (form.getAnswers().stream().anyMatch(answer -> answer.getUser().equals(user))) {
+            throw new CannotDuplicateAnswerException(user, form);
+        }
+
         Collection<Answer> answers = assembly((SchemeGroup) form.getRoot(), request.getRoot(), authService.getCurrentUser(), form);
         answersRepository.saveAll(answers);
     }
@@ -83,6 +93,28 @@ class FormServiceImpl implements FormService {
         }
 
         return result;
+    }
+
+    @Override
+    public void clone(CloneFormRequest cloneFormRequest) {
+        Form form = findFormByCode(cloneFormRequest.getFormCode());
+        form.setId(null);
+        form.setExpiredDate(cloneFormRequest.getDateExpired());
+        form.setCode(Utils.randomUUID(Utils.SAVE_LENGTH, -1, Utils.SPACE_CHAR));
+        form.setAnswers(Collections.EMPTY_SET);
+        repository.save(form);
+    }
+
+    @Override
+    public void update(UpdateFormRequest request) {
+        Form form = findFormByCode(request.getFormCode());
+        form.setExpiredDate(request.getExpiredDate());
+        form.setRoot(request.getRoot());
+        repository.save(form);
+    }
+
+    public Form findFormByCode(String code) {
+        return repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code));
     }
 
     private AnswerResponse assemblyAnswer(Answer answer) {
