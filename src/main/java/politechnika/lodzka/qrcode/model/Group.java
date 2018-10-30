@@ -13,6 +13,7 @@ import java.util.Set;
 @Table(name = "GROUP_T")
 public class Group extends BaseEntity {
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "MODERATOR_ID", referencedColumnName = "ID", nullable = false)
     private User moderator;

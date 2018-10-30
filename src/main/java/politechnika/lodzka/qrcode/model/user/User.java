@@ -1,6 +1,7 @@
 package politechnika.lodzka.qrcode.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,6 +53,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "IS_ACTIVE", nullable = false)
     private AccountStatus status;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "moderator")
     private Collection<Group> moderatedGroups;
 
