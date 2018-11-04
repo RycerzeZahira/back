@@ -24,7 +24,7 @@
         <td bgcolor="#eaeaea" style="padding: 20px 30px 20px 30px;">
             <p th:text="${activationDescription}">Here is your activation link</p>
             <p>
-                <a th:href="@{'http://localhost:8081/registration/activate/' + ${token}}"><p th:text="${confirmation}">Click here to activate your account</p></a>
+                <a th:href="@{'http://api-qr-code.herokuapp.com/registration/activate/' + ${token}}"><p th:text="${confirmation}">Click here to activate your account</p></a>
             </p>
         </td>
     </tr>
