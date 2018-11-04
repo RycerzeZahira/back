@@ -45,12 +45,12 @@ class RegistrationServiceImpl implements RegistrationService {
                 .email(registrationRequest.getEmail())
                 .password(passwordEncoder.encode(registrationRequest.getPassword()))
                 .isLocked(false)
-                .status(AccountStatus.ACTIVE)
+                .status(AccountStatus.INACTIVE)
                 .build();
 
         userRepository.save(user);
 
- /*       final ActivationToken activationToken = new ActivationToken();
+        final ActivationToken activationToken = new ActivationToken();
         String token = tokenService.generateActivationToken(user);
         activationToken.setToken(token);
         activationToken.setUser(user);
@@ -58,7 +58,7 @@ class RegistrationServiceImpl implements RegistrationService {
         tokenRepository.save(activationToken);
         String mailContent = createRegistrationEmailContent(language, token, user);
 
-        mailSenderService.sendEmail(user.getEmail(), mailContent, MailType.ACTIVATION, language);*/
+        mailSenderService.sendEmail(user.getEmail(), mailContent, MailType.ACTIVATION, language);
     }
 
     @Override
