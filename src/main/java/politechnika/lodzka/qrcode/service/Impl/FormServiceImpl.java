@@ -180,4 +180,8 @@ class FormServiceImpl implements FormService {
     private boolean isGroup(Element element) {
         return TypeClass.GROUP.equals(element.getType());
     }
+
+    public Collection<Form> getCurrentUserForms() {
+        return repository.findByGroup_UsersContaining(authService.getCurrentUser());
+    }
 }

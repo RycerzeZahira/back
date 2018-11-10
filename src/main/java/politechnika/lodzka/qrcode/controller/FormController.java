@@ -63,4 +63,9 @@ public class FormController {
         service.clone(cloneFormRequest);
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(value = "/")
+    public ResponseEntity getAllUserForms() {
+        return ResponseEntity.ok(service.getCurrentUserForms());
+    }
 }

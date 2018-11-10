@@ -23,4 +23,6 @@ public interface FormService {
     void update(UpdateFormRequest request);
 
     Form findFormByCode(String code);
+
+    Collection<Form> getCurrentUserForms();
 }
