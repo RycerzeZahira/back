@@ -3,13 +3,14 @@ package politechnika.lodzka.qrcode.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
-import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
 import politechnika.lodzka.qrcode.model.response.JwtAuthenticationResponse;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.service.AuthService;
 
@@ -50,5 +51,10 @@ public class UserController {
 
         return userRepository.getUserByEmail(principal.getName())
                 .orElseThrow(() -> new UserNotFoundException("Could not found user"));
+    }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity changePassword(String oldPassword, String newPassword) {
+        return ResponseEntity.ok(authService.changePassword(oldPassword, newPassword) ? HttpStatus.NO_CONTENT : HttpStatus.UNAUTHORIZED);
     }
 }

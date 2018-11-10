@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import politechnika.lodzka.qrcode.exception.UserNotActivatedException;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
@@ -21,11 +22,14 @@ class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(JwtTokenProvider tokenProvider, AuthenticationManager authenticationManager, UserRepository userRepository) {
+
+    public AuthServiceImpl(JwtTokenProvider tokenProvider, AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.tokenProvider = tokenProvider;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -56,5 +60,16 @@ class AuthServiceImpl implements AuthService {
     public User getCurrentUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.getUserByEmail(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException(userDetails.getUsername()));
+    }
+
+    @Override
+    public boolean changePassword(String oldPassword, String newPassword) {
+        User current = getCurrentUser();
+        if (auth(new AuthenticationRequest(current.getEmail(), oldPassword)).isAuthenticated()) {
+            current.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(current);
+            return true;
+        }
+        return false;
     }
 }
