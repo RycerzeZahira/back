@@ -23,7 +23,7 @@ class MailSenderServiceImpl implements MailSenderService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
-    @Value("${mail.sender}")
+    @Value("${spring.mail.username}")
     private String mailSender;
 
     public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
