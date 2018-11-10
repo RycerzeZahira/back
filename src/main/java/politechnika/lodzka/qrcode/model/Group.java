@@ -2,16 +2,22 @@ package politechnika.lodzka.qrcode.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import politechnika.lodzka.qrcode.model.user.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
-@Data
+@NoArgsConstructor
 @Table(name = "GROUP_T")
-public class Group extends BaseEntity {
+public class Group extends BaseEntity implements Serializable {
 
     @JsonBackReference
     @ManyToOne
@@ -28,7 +34,7 @@ public class Group extends BaseEntity {
     private Set<User> users;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Form> forms;
 
     @Column(name = "NAME", nullable = false)

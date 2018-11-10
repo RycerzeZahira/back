@@ -3,17 +3,23 @@ package politechnika.lodzka.qrcode.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import politechnika.lodzka.qrcode.model.scheme.Answer;
 import politechnika.lodzka.qrcode.model.scheme.Element;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "FORM_T")
-public class Form extends BaseEntity {
+public class Form extends BaseEntity implements Serializable {
 
     @JsonManagedReference
     @ManyToOne(cascade = CascadeType.ALL)
@@ -34,7 +40,7 @@ public class Form extends BaseEntity {
     private String code;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "form")
+    @OneToMany(mappedBy = "form", orphanRemoval = true)
     private Collection<Answer> answers;
 
     public Form(Group group, Date expiredDate, Element root, String code) {
