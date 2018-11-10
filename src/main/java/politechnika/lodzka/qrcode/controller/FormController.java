@@ -64,7 +64,7 @@ public class FormController {
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public ResponseEntity getAllUserForms() {
         return ResponseEntity.ok(service.getCurrentUserForms());
     }

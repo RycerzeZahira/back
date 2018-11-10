@@ -182,6 +182,7 @@ class FormServiceImpl implements FormService {
     }
 
     public Collection<Form> getCurrentUserForms() {
-        return repository.findByGroup_UsersContaining(authService.getCurrentUser());
+        User current = authService.getCurrentUser();
+        return repository.findByGroup_UsersContainingOrGroup_Moderator(current, current);
     }
 }
