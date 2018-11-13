@@ -3,14 +3,25 @@ package politechnika.lodzka.qrcode.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
+import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
+import politechnika.lodzka.qrcode.model.request.ResetPasswordRequest;
+import politechnika.lodzka.qrcode.model.request.SendResetPasswordEmailRequest;
 import politechnika.lodzka.qrcode.model.response.JwtAuthenticationResponse;
 import politechnika.lodzka.qrcode.model.user.User;
+import politechnika.lodzka.qrcode.repository.TokenRepository;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.service.AuthService;
 
@@ -23,10 +34,12 @@ public class UserController {
 
     private final AuthService authService;
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
-    public UserController(AuthService authService, UserRepository userRepository) {
+    public UserController(AuthService authService, UserRepository userRepository, TokenRepository tokenRepository) {
         this.authService = authService;
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @ApiOperation(value = "Signing in user", notes = "Returns authentication token")
@@ -56,5 +69,29 @@ public class UserController {
     @PostMapping("/changePassword")
     public ResponseEntity changePassword(String oldPassword, String newPassword) {
         return ResponseEntity.ok(authService.changePassword(oldPassword, newPassword) ? HttpStatus.NO_CONTENT : HttpStatus.UNAUTHORIZED);
+    }
+
+    @ApiOperation(value = "Sending password reset link")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful email sending"),
+            @ApiResponse(code = 404, message = "User not found")})
+    @PostMapping("/sendResetPasswordMail")
+    public ResponseEntity sendResetPasswordEmail(@Valid @RequestBody final SendResetPasswordEmailRequest resetPasswordRequest,
+                                                 @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) final String language) {
+        authService.sendResetPasswordEmail(resetPasswordRequest.getEmail(), Language.fromString(language));
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "Resets User's password")
+    @PostMapping("/resetPassword")
+    public String resetPassword(@ModelAttribute("resetPasswordForm") @Valid ResetPasswordRequest resetPasswordRequest) {
+        try {
+            authService.resetPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getPassword(), resetPasswordRequest.getConfirmationPassword());
+        } catch (Exception ex) {
+            return "FAILURE";
+        }
+
+        return "SUCCESS";
     }
 }

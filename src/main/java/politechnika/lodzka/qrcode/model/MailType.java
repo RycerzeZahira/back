@@ -6,8 +6,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum MailType {
-    ACTIVATION("UserActivationMail"),
-    LIST("UserListMail");
+    ACTIVATION("UserTokenOperationMail"),
+    LIST("UserListMail"),
+    PASSWORD_RESET("UserTokenOperationMail");
 
     private String mailType;
 }

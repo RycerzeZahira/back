@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Entity
 @Data
-public class ActivationToken extends BaseEntity {
+public class OperationToken extends BaseEntity {
     private static final int EXPIRATION = 60 * 24;
 
     private String token;

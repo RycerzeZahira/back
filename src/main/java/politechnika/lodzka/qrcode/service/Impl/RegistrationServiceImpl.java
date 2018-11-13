@@ -1,12 +1,14 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import politechnika.lodzka.qrcode.exception.UserAlreadyExistsException;
-import politechnika.lodzka.qrcode.model.ActivationToken;
+import politechnika.lodzka.qrcode.exception.UserNotFoundException;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.MailType;
+import politechnika.lodzka.qrcode.model.TokenOperationType;
 import politechnika.lodzka.qrcode.model.request.RegistrationRequest;
 import politechnika.lodzka.qrcode.model.user.AccountStatus;
 import politechnika.lodzka.qrcode.model.user.User;
@@ -18,6 +20,9 @@ import politechnika.lodzka.qrcode.service.TokenService;
 
 @Service
 class RegistrationServiceImpl implements RegistrationService {
+    @Value("${server.url}")
+    private String serverUrl;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenRepository tokenRepository;
@@ -50,13 +55,9 @@ class RegistrationServiceImpl implements RegistrationService {
 
         userRepository.save(user);
 
-        final ActivationToken activationToken = new ActivationToken();
-        String token = tokenService.generateActivationToken(user);
-        activationToken.setToken(token);
-        activationToken.setUser(user);
+        String token = tokenService.generateAndSaveTokenForUser(user, TokenOperationType.ACTIVATION);
 
-        tokenRepository.save(activationToken);
-        String mailContent = createRegistrationEmailContent(language, token, user);
+        String mailContent = createRegistrationEmailContent(language, new StringBuilder().append(serverUrl).append("/registration/activate/").append(token).toString(), user);
 
         mailSenderService.sendEmail(user.getEmail(), mailContent, MailType.ACTIVATION, language);
     }
@@ -64,7 +65,8 @@ class RegistrationServiceImpl implements RegistrationService {
     @Override
     @Transactional
     public void activateUser(String token) {
-        User user = tokenRepository.getUserIdByActivationToken(token);
+        User user = tokenRepository.getUserByActivationToken(token).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
         user.setStatus(AccountStatus.ACTIVE);
         tokenRepository.deleteActivationTokenByToken(token);
     }
@@ -73,21 +75,21 @@ class RegistrationServiceImpl implements RegistrationService {
         String mailContent;
         switch (language) {
             case PL:
-                mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Witaj ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
+                mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Witaj ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
                         "Dziękujemy za rejestrację w serwisie ListIt",
                         "Oto Twój link aktywacyjny:",
                         "Kliknij tutaj, aby potwierdzić adres e-mail");
                 break;
             case EN:
-                mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
+                mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
                         "Thank You for signing up in ListIt",
                         "Here is your activation link",
                         "Click here to activate your e-mail address");
                 break;
             default:
-                mailContent = mailSenderService.createActivationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
+                mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
                         "Thank You for signing up in ListIt",
                         "Here is your activation link",

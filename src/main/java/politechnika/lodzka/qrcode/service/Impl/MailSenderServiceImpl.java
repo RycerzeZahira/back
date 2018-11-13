@@ -19,6 +19,8 @@ class MailSenderServiceImpl implements MailSenderService {
     private final static String ACTIVATION_SUBJECT_EN = "ListIt - Activation Link";
     private final static String LIST_SUBJECT_PL = "ListIt - Nowa lista";
     private final static String LIST_SUBJECT_EN = "ListIt - New list";
+    private final static String PASSWORD_RESET_SUBJECT_PL = "ListIt - Reset hasła";
+    private final static String PASSWORD_RESET_SUBJECT_EN = "ListIt - Password reset";
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
@@ -58,7 +60,7 @@ class MailSenderServiceImpl implements MailSenderService {
     }
 
     @Override
-    public String createActivationEmail(String name, String token, String mailDescription, String activationDescription, String confirmation) {
+    public String createTokenOperationEmail(String name, String token, String mailDescription, String activationDescription, String confirmation) {
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("token", token);
@@ -75,6 +77,8 @@ class MailSenderServiceImpl implements MailSenderService {
                 return chooseMailLanguage(language, ACTIVATION_SUBJECT_PL, ACTIVATION_SUBJECT_EN);
             case LIST:
                 return chooseMailLanguage(language, LIST_SUBJECT_PL, LIST_SUBJECT_EN);
+            case PASSWORD_RESET:
+                return chooseMailLanguage(language, PASSWORD_RESET_SUBJECT_PL, PASSWORD_RESET_SUBJECT_EN);
             default:
                 return ACTIVATION_SUBJECT_EN;
         }
