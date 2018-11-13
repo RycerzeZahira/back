@@ -1,7 +1,8 @@
 package politechnika.lodzka.qrcode.service;
 
+import politechnika.lodzka.qrcode.model.TokenOperationType;
 import politechnika.lodzka.qrcode.model.user.User;
 
 public interface TokenService {
-    String generateActivationToken(User user);
+    String generateAndSaveTokenForUser(User user, TokenOperationType operationType);
 }

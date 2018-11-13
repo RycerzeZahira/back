@@ -41,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/h2/**",
             "/registration/**",
             "/user/login",
+            "/user/resetPassword",
+            "/user/sendResetPasswordMail",
             "/view/**",
 
             //Swagger

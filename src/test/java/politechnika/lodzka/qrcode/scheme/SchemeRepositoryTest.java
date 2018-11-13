@@ -1,7 +1,11 @@
 package politechnika.lodzka.qrcode.scheme;
 
 import org.junit.Test;
-import politechnika.lodzka.qrcode.model.scheme.*;
+import politechnika.lodzka.qrcode.model.scheme.Element;
+import politechnika.lodzka.qrcode.model.scheme.SchemeBuilder;
+import politechnika.lodzka.qrcode.model.scheme.SchemeGroup;
+import politechnika.lodzka.qrcode.model.scheme.TypeClass;
+
 
 public class SchemeRepositoryTest {
     @Test
