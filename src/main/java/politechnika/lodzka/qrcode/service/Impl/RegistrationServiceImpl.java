@@ -77,22 +77,22 @@ class RegistrationServiceImpl implements RegistrationService {
             case PL:
                 mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Witaj ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
-                        "Dziękujemy za rejestrację w serwisie ListIt",
-                        "Oto Twój link aktywacyjny:",
+                        "Po poprawnej aktywacji konta będziesz mógł zalogować się w aplikacji mobilnej.",
+                        "Dziękujemy za rejestrację w ListIt, aby dokończyć ten proces proszę naciśnij link poniżej:",
                         "Kliknij tutaj, aby potwierdzić adres e-mail");
                 break;
             case EN:
                 mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
-                        "Thank You for signing up in ListIt",
-                        "Here is your activation link",
+                        "You will be able to sign in to mobile application after successful activation.",
+                        "Thank You for signing up in ListIt. Please follow the link below to complete the registration:",
                         "Click here to activate your e-mail address");
                 break;
             default:
                 mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
-                        "Thank You for signing up in ListIt",
-                        "Here is your activation link",
+                        "You will be able to sign in to mobile application after successful activation.",
+                        "Thank You for signing up in ListIt. Please follow the link below to complete the registration:",
                         "Click here to activate your e-mail address");
         }
 

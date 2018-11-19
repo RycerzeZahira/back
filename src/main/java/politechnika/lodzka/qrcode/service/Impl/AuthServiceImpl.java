@@ -124,22 +124,22 @@ class AuthServiceImpl implements AuthService {
             case PL:
                 mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Witaj ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
-                        "Reset hasła",
-                        "Oto Twój link resetujący hasło:",
+                        "Jeśli nie chcesz zmieniać hasła po prostu zignoruj tą wiadomość i dalej używaj obecnego.",
+                        "Otrzymaliśmy prośbę o zmianę hasła. Jeśli jesteś pewien, że chcesz tego dokonać, naciśnij link poniżej:",
                         "Kliknij tutaj, aby zresetować hasło");
                 break;
             case EN:
                 mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
-                        "Password Reset",
-                        "Here is your password reset link",
+                        "If you don't want to change your password, just ignore this e-mail and use the current one.",
+                        "We received a request to reset your password. If you want to change it click the link below:",
                         "Click here to reset password");
                 break;
             default:
                 mailContent = mailSenderService.createTokenOperationEmail(new StringBuilder().append("Hello ").append(user.getEmail(), 0, user.getEmail().indexOf("@")).append("!").toString(),
                         token,
-                        "Password Reset",
-                        "Here is your password reset link",
+                        "If you don't want to change your password, just ignore this e-mail and use the current one.",
+                        "We received a request to reset your password. If you want to change it click the link below:",
                         "Click here to reset password");
         }
 

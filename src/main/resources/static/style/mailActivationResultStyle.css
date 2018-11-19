@@ -1,0 +1,64 @@
+/*Background pattern from Toptal Subtle Patterns*/
+body {
+    width: 100%;
+    background-image: url('../images/doodles.png');
+}
+
+#mainContainer {
+    font-family: 'Raleway', sans-serif;
+    margin: 15vh auto 0;
+    background-color: rgba(130, 130, 130, 0.8);
+    border-radius: 5px;
+    text-align: center;
+    position: relative;
+}
+
+#logoHeader {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 3vh;
+}
+
+#nameHeader {
+    font-family: 'Pacifico', cursive;
+    color: white;
+}
+
+#resultMessageHeader {
+    padding-top: 2vh;
+}
+
+#resultMessageDescription {
+    font-size: 20px;
+    padding-bottom: 10vh;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 5px;
+    background-color: rgba(237, 82, 71, 0.9);
+    padding-top: 2vh;
+    padding-bottom: 1vh;
+}
+
+#logoImage {
+    width: 15%;
+}
+
+@media (max-width: 600px) {
+    #resultMessageDescription {
+        font-size: 15px;
+        padding-bottom: 15vh;
+    }
+
+    #logoImage {
+        width: 40%;
+    }
+
+    #mainContainer {
+        margin-top: 7.5vh;
+    }
+}

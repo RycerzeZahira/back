@@ -1,18 +1,36 @@
-<!DOCTYPE HTML>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+
     <title>Success</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet"
+          href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" media="screen" th:href="@{/style/mailActivationResultStyle.css}"/>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div style="width: 50vw; height: 50vh; margin: 0 auto; background-color: darkgray; text-align: center; position: relative">
-    <div style="width: 50%; margin: 0 auto; padding-top: 1vw">
-        <img th:src="@{/images/qrCode.png}" alt="Logo" width="200vw" style="display: block; margin-left: auto; margin-right: auto">
+<div id="mainContainer" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <h3 id="logoHeader"><img id="logoImage" th:src="@{/images/qrCode.png}" alt="Logo"></h3>
+                <h1 id="nameHeader">ListIt</h1>
+                <h3 id="resultMessageHeader" th:text="#{success.header}" style="color: #02842d">Email confirmed successfully!</h3>
+                <p id="resultMessageDescription" th:text="#{success.description}">Thank you for using ListIT</p>
+            </div>
+            <div id="footer" class="col-md-12">Icons made by <a
+                    href="https://www.flaticon.com/authors/dinosoftlabs"
+                    title="DinosoftLabs">DinosoftLabs</a> from <a
+                    href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a
+                    href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC
+                3.0 BY</a></div>
+        </div>
     </div>
-    <h1 th:text="#{success.header}">Email confirmed successfully!</h1>
-    <h4 th:text="#{success.description}" style="text-align: left; padding-top: 3vh">Thank you for using ListIT</h4>
-    <div style="position: absolute; bottom: 0">Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 </div>
 </body>
 </html>
