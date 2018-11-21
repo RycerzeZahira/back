@@ -67,7 +67,7 @@ class FormServiceImpl implements FormService {
             throw new NoPermissionException(user);
         }
 
-        if (schemeService.validate(form.getRoot(), request.getRoot())) {
+        if (!schemeService.validate(form.getRoot(), request.getRoot())) {
             throw new SchemeNotValidException("Scheme is not valid exception!");
         }
 
