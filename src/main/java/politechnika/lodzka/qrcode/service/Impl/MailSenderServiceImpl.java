@@ -1,6 +1,8 @@
 package politechnika.lodzka.qrcode.service.Impl;
 
+import com.opencsv.CSVWriter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -8,10 +10,17 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.MailType;
+import politechnika.lodzka.qrcode.model.response.AnswerResponse;
+import politechnika.lodzka.qrcode.repository.AnswersRepository;
+import politechnika.lodzka.qrcode.service.FormService;
 import politechnika.lodzka.qrcode.service.MailSenderService;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 class MailSenderServiceImpl implements MailSenderService {
@@ -24,13 +33,49 @@ class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
+    private final FormService formService;
+    private final AnswersRepository answersRepository;
 
     @Value("${spring.mail.username}")
     private String mailSender;
 
-    public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
+    public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine, @Lazy FormService formService, AnswersRepository answersRepository, AnswersRepository answersRepository1) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
+        this.formService = formService;
+        this.answersRepository = answersRepository1;
+    }
+
+    @Override
+    public void sendListEmail(String to, String formCode, MailType mailType, Language language) throws IOException {
+        ArrayList<AnswerResponse> answers = (ArrayList<AnswerResponse>) formService.getAnswers(formCode);
+
+        File file = new File("list.csv");
+        FileWriter outputFile = new FileWriter(file);
+        CSVWriter writer = new CSVWriter(outputFile, '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+
+        for (AnswerResponse answerResponse : answers) {
+            writer.writeNext(new String[]{answerResponse.toString()});
+        }
+        writer.close();
+
+        String mailContent;
+        switch (language) {
+            case EN:
+                mailContent = createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
+                        "You can find your list in the attachment.");
+                break;
+            case PL:
+                mailContent = createListEmail(new StringBuilder().append("Witaj").append(to, 0, to.indexOf("@")).append("!").toString(),
+                        "W załączniku znajduje się Twoja lista.");
+                break;
+            default:
+                mailContent = createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
+                        "You can find your list in the attachment.");
+                break;
+        }
+
+        sendEmail(to, mailContent, mailType, language, file);
     }
 
     @Override
@@ -43,6 +88,24 @@ class MailSenderServiceImpl implements MailSenderService {
             helper.setFrom(mailSender);
             helper.setSubject(chooseMailSubject(mailType, language));
             helper.setText(content, true);
+            javaMailSender.send(mail);
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendEmail(final String to, final String content,
+                          final MailType mailType, Language language,
+                          final File file) {
+        try {
+            MimeMessage mail = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mail, true);
+            helper.setTo(to);
+            helper.setFrom(mailSender);
+            helper.setSubject(chooseMailSubject(mailType, language));
+            helper.setText(content, true);
+            helper.addAttachment("list.csv", file);
             javaMailSender.send(mail);
         } catch (MessagingException ex) {
             ex.printStackTrace();
@@ -71,8 +134,16 @@ class MailSenderServiceImpl implements MailSenderService {
         return templateEngine.process(MailType.ACTIVATION.getMailType(), context);
     }
 
-    private String chooseMailSubject(MailType mailType, Language language){
-        switch (mailType){
+    private String createListEmail(String name, String description) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("description", description);
+
+        return templateEngine.process(MailType.LIST.getMailType(), context);
+    }
+
+    private String chooseMailSubject(MailType mailType, Language language) {
+        switch (mailType) {
             case ACTIVATION:
                 return chooseMailLanguage(language, ACTIVATION_SUBJECT_PL, ACTIVATION_SUBJECT_EN);
             case LIST:
@@ -85,7 +156,7 @@ class MailSenderServiceImpl implements MailSenderService {
     }
 
     private String chooseMailLanguage(Language language, String subject_pl, String subject_en) {
-        switch (language){
+        switch (language) {
             case PL:
                 return subject_pl;
             case EN:
