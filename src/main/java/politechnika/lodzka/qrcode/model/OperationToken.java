@@ -14,16 +14,16 @@ import java.util.Date;
 @Entity
 @Data
 public class OperationToken extends BaseEntity {
-    private static final int EXPIRATION = 60 * 24;
+    public static final int EXPIRATION = 60 * 24;
 
     private String token;
 
-    private Date expiryDate;
+    private Date expiryDate = calculateExpiryDate();
 
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+    private Date calculateExpiryDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Timestamp(calendar.getTime().getTime()));
-        calendar.add(Calendar.MINUTE, expiryTimeInMinutes);
+        calendar.add(Calendar.MINUTE, OperationToken.EXPIRATION);
 
         return new Date(calendar.getTime().getTime());
     }

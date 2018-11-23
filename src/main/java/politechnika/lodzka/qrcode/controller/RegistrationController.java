@@ -17,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.request.RegistrationRequest;
 import politechnika.lodzka.qrcode.service.RegistrationService;
+import politechnika.lodzka.qrcode.service.TokenService;
 
 import javax.validation.Valid;
 
@@ -25,9 +26,11 @@ import javax.validation.Valid;
 public class RegistrationController {
 
     private final RegistrationService registrationService;
+    private final TokenService tokenService;
 
-    public RegistrationController(RegistrationService registrationService) {
+    public RegistrationController(RegistrationService registrationService, TokenService tokenService) {
         this.registrationService = registrationService;
+        this.tokenService = tokenService;
     }
 
     @ApiOperation(value = "Signing up user")
@@ -48,6 +51,10 @@ public class RegistrationController {
     @GetMapping(value = "/activate/{token}")
     public String userActivation(final @PathVariable("token") String token, WebRequest request) {
         String lang = request.getLocale().getLanguage();
+        if (tokenService.isTokenExpired(token)) {
+            return new StringBuilder().append("redirect:/view/expiredToken?lang=").append(lang).toString();
+        }
+
         try {
             registrationService.activateUser(token);
         } catch (Exception ex) {

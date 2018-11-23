@@ -46,6 +46,11 @@ public class ViewController {
         return "InvalidPasswordChange";
     }
 
+    @GetMapping(value = "/expiredToken")
+    public String expiredToken() {
+        return "ExpiredToken";
+    }
+
     @GetMapping(value = "/resetPassword")
     public String displayResetPasswordPage(@RequestParam(required = false) String token,
                                            Model model) {

@@ -23,9 +23,9 @@ import politechnika.lodzka.qrcode.model.request.ResetPasswordRequest;
 import politechnika.lodzka.qrcode.model.request.SendResetPasswordEmailRequest;
 import politechnika.lodzka.qrcode.model.response.JwtAuthenticationResponse;
 import politechnika.lodzka.qrcode.model.user.User;
-import politechnika.lodzka.qrcode.repository.TokenRepository;
 import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.service.AuthService;
+import politechnika.lodzka.qrcode.service.TokenService;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -36,12 +36,12 @@ public class UserController {
 
     private final AuthService authService;
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
+    private final TokenService tokenService;
 
-    public UserController(AuthService authService, UserRepository userRepository, TokenRepository tokenRepository) {
+    public UserController(AuthService authService, UserRepository userRepository, TokenService tokenService) {
         this.authService = authService;
         this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
+        this.tokenService = tokenService;
     }
 
     @ApiOperation(value = "Signing in user", notes = "Returns authentication token")
@@ -90,6 +90,9 @@ public class UserController {
     public ModelAndView resetPassword(@ModelAttribute("resetPasswordForm") @Valid ResetPasswordRequest resetPasswordRequest,
                                       WebRequest request) {
         String lang = request.getLocale().getLanguage();
+        if (tokenService.isTokenExpired(resetPasswordRequest.getToken())) {
+            return new ModelAndView(new StringBuilder().append("redirect:/view/expiredToken?lang=").append(lang).toString());
+        }
         try {
             authService.resetPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getPassword(), resetPasswordRequest.getConfirmationPassword());
         } catch (Exception ex) {

@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+
+    <title>Failure</title>
+
+    <link rel="stylesheet"
+          href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" media="screen" th:href="@{/style/actionConfirmationStyle.css}"/>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div id="mainContainer" class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <h3 id="logoHeader"><img id="logoImage" th:src="@{/images/qrCode.png}" alt="Logo"></h3>
+                <h1 id="nameHeader">ListIt</h1>
+                <h3 id="resultMessageHeader" th:text="#{token.expired.header}" style="color: #bc170b">Token expired</h3>
+                <p id="resultMessageDescription" th:text="#{token.expired.description}">Resend your e-mail</p>
+            </div>
+            <div id="footer" class="col-md-12">Icons made by <a
+                    href="https://www.flaticon.com/authors/dinosoftlabs"
+                    title="DinosoftLabs">DinosoftLabs</a> from <a
+                    href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a
+                    href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC
+                3.0 BY</a></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (document.URL.indexOf("#") === -1) {
+            url = document.URL + "#";
+            location = "#";
+
+            location.reload(true);
+        }
+    });
+</script>
+</body>
+</html>
