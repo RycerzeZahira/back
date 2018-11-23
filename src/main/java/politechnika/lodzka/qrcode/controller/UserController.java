@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 import politechnika.lodzka.qrcode.exception.UserNotFoundException;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.request.AuthenticationRequest;
@@ -85,13 +87,15 @@ public class UserController {
 
     @ApiOperation(value = "Resets User's password")
     @PostMapping("/resetPassword")
-    public String resetPassword(@ModelAttribute("resetPasswordForm") @Valid ResetPasswordRequest resetPasswordRequest) {
+    public ModelAndView resetPassword(@ModelAttribute("resetPasswordForm") @Valid ResetPasswordRequest resetPasswordRequest,
+                                      WebRequest request) {
+        String lang = request.getLocale().getLanguage();
         try {
             authService.resetPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getPassword(), resetPasswordRequest.getConfirmationPassword());
         } catch (Exception ex) {
-            return "FAILURE";
+            return new ModelAndView(new StringBuilder().append("redirect:/view/failurePasswordChange?lang=").append(lang).toString());
         }
 
-        return "SUCCESS";
+        return new ModelAndView(new StringBuilder().append("redirect:/view/successPasswordChange?lang=").append(lang).toString());
     }
 }

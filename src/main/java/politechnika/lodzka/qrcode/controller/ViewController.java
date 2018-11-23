@@ -36,6 +36,16 @@ public class ViewController {
         return "InvalidActivation";
     }
 
+    @GetMapping(value = "/successPasswordChange")
+    public String successfulPasswordChange() {
+        return "SuccessfulPasswordChange";
+    }
+
+    @GetMapping(value = "/failurePasswordChange")
+    public String invalidPasswordChange() {
+        return "InvalidPasswordChange";
+    }
+
     @GetMapping(value = "/resetPassword")
     public String displayResetPasswordPage(@RequestParam(required = false) String token,
                                            Model model) {
