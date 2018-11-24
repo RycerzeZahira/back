@@ -10,7 +10,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.MailType;
-import politechnika.lodzka.qrcode.model.response.AnswerResponse;
+import politechnika.lodzka.qrcode.model.scheme.Answer;
+import politechnika.lodzka.qrcode.model.scheme.TypeClass;
 import politechnika.lodzka.qrcode.repository.AnswersRepository;
 import politechnika.lodzka.qrcode.service.FormService;
 import politechnika.lodzka.qrcode.service.MailSenderService;
@@ -20,7 +21,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 
 @Service
 class MailSenderServiceImpl implements MailSenderService {
@@ -48,15 +49,26 @@ class MailSenderServiceImpl implements MailSenderService {
 
     @Override
     public void sendListEmail(String to, String formCode, MailType mailType, Language language) throws IOException {
-        ArrayList<AnswerResponse> answers = (ArrayList<AnswerResponse>) formService.getAnswers(formCode);
+        /**
+         * Pierwszy element każdej odpowiedzi to GRUP. Klasa Group nie posiada wartości dlatego nie można używac tutaj getValue.
+         * Każda grupa posiada dzieci - są to pola z wartościami. Załorzyliśmy, że nie będziemy kożystać z grup w grupach
+         * więc możemy olać taki przypadek.
+         */
+        Collection<Answer> answers = answersRepository.findAnswerByFormCode(formCode);
 
         File file = new File("list.csv");
         FileWriter outputFile = new FileWriter(file);
         CSVWriter writer = new CSVWriter(outputFile, '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
 
-        for (AnswerResponse answerResponse : answers) {
-            writer.writeNext(new String[]{answerResponse.toString()});
+        for (Answer userAnswer : answers) {
+            for (Answer answer : userAnswer.getChilds()) {
+                if (!TypeClass.GROUP.equals(answer.getScheme().getType())) {
+                    Object object = answer.getValue();
+                    writer.writeNext(new String[]{object.toString()});
+                }
+            }
         }
+
         writer.close();
 
         String mailContent;
