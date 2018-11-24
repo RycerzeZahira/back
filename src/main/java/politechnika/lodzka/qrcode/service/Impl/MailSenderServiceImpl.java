@@ -43,11 +43,11 @@ class MailSenderServiceImpl implements MailSenderService {
     @Value("${spring.mail.username}")
     private String mailSender;
 
-    public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine, @Lazy FormService formService, AnswersRepository answersRepository, AnswersRepository answersRepository1) {
+    public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine, @Lazy FormService formService, AnswersRepository answersRepository) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.formService = formService;
-        this.answersRepository = answersRepository1;
+        this.answersRepository = answersRepository;
     }
 
     @Override
@@ -60,39 +60,12 @@ class MailSenderServiceImpl implements MailSenderService {
         FileWriter outputFile = new FileWriter(file);
 
         CSVWriter writer = new CSVWriter(outputFile, '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
-        writer.writeNext(new String[]{form.getRoot().getName()});
-        writer.writeNext(getAnswersFieldsNames(answers));
-
-        for (Answer userAnswer : answers) {
-            ArrayList<String> answersList = new ArrayList<>();
-            for (Answer answer : userAnswer.getChilds()) {
-                if (!TypeClass.GROUP.equals(answer.getScheme().getType())) {
-                    Object object = answer.getValue();
-                    answersList.add(object.toString());
-                }
-            }
-            writer.writeNext(convertListOfStringsToArray(answersList));
-        }
-
+        writeDataToFile(writer, form, answers);
         writer.close();
 
-        String mailContent;
-        switch (language) {
-            case EN:
-                mailContent = createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
-                        "You can find your list in the attachment.");
-                break;
-            case PL:
-                mailContent = createListEmail(new StringBuilder().append("Witaj").append(to, 0, to.indexOf("@")).append("!").toString(),
-                        "W załączniku znajduje się Twoja lista.");
-                break;
-            default:
-                mailContent = createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
-                        "You can find your list in the attachment.");
-                break;
-        }
-
+        String mailContent = createListEmailContent(language, to);
         sendEmail(to, mailContent, mailType, language, file, fileName);
+
         file.delete();
     }
 
@@ -152,14 +125,6 @@ class MailSenderServiceImpl implements MailSenderService {
         return templateEngine.process(MailType.ACTIVATION.getMailType(), context);
     }
 
-    private String createListEmail(String name, String description) {
-        Context context = new Context();
-        context.setVariable("name", name);
-        context.setVariable("description", description);
-
-        return templateEngine.process(MailType.LIST.getMailType(), context);
-    }
-
     private String chooseMailSubject(MailType mailType, Language language) {
         switch (mailType) {
             case ACTIVATION:
@@ -201,5 +166,43 @@ class MailSenderServiceImpl implements MailSenderService {
     private String[] convertListOfStringsToArray(ArrayList<String> stockList) {
         String[] stockArr = new String[stockList.size()];
         return stockList.toArray(stockArr);
+    }
+
+    private void writeDataToFile(CSVWriter writer, Form form, Collection<Answer> answers) {
+        writer.writeNext(new String[]{form.getRoot().getName()});
+        writer.writeNext(getAnswersFieldsNames(answers));
+
+        for (Answer userAnswer : answers) {
+            ArrayList<String> answersList = new ArrayList<>();
+            for (Answer answer : userAnswer.getChilds()) {
+                if (!TypeClass.GROUP.equals(answer.getScheme().getType())) {
+                    Object object = answer.getValue();
+                    answersList.add(object.toString());
+                }
+            }
+            writer.writeNext(convertListOfStringsToArray(answersList));
+        }
+    }
+
+    private String createListEmailContent(Language language, String to) {
+        switch (language) {
+            case EN:
+                return createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
+                        "You can find your list in the attachment.");
+            case PL:
+                return createListEmail(new StringBuilder().append("Witaj").append(to, 0, to.indexOf("@")).append("!").toString(),
+                        "W załączniku znajduje się Twoja lista.");
+            default:
+                return createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
+                        "You can find your list in the attachment.");
+        }
+    }
+
+    private String createListEmail(String name, String description) {
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("description", description);
+
+        return templateEngine.process(MailType.LIST.getMailType(), context);
     }
 }
