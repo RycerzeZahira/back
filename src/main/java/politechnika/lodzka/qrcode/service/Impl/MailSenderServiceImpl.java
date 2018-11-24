@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.MailType;
 import politechnika.lodzka.qrcode.model.scheme.Answer;
@@ -21,7 +22,9 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 class MailSenderServiceImpl implements MailSenderService {
@@ -49,24 +52,26 @@ class MailSenderServiceImpl implements MailSenderService {
 
     @Override
     public void sendListEmail(String to, String formCode, MailType mailType, Language language) throws IOException {
-        /**
-         * Pierwszy element każdej odpowiedzi to GRUP. Klasa Group nie posiada wartości dlatego nie można używac tutaj getValue.
-         * Każda grupa posiada dzieci - są to pola z wartościami. Załorzyliśmy, że nie będziemy kożystać z grup w grupach
-         * więc możemy olać taki przypadek.
-         */
         Collection<Answer> answers = answersRepository.findAnswerByFormCode(formCode);
+        Form form = formService.findByCode(formCode);
 
-        File file = new File("list.csv");
+        String fileName = form.getRoot().getName() + ".csv";
+        File file = new File(fileName);
         FileWriter outputFile = new FileWriter(file);
+
         CSVWriter writer = new CSVWriter(outputFile, '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+        writer.writeNext(new String[]{form.getRoot().getName()});
+        writer.writeNext(getAnswersFieldsNames(answers));
 
         for (Answer userAnswer : answers) {
+            ArrayList<String> answersList = new ArrayList<>();
             for (Answer answer : userAnswer.getChilds()) {
                 if (!TypeClass.GROUP.equals(answer.getScheme().getType())) {
                     Object object = answer.getValue();
-                    writer.writeNext(new String[]{object.toString()});
+                    answersList.add(object.toString());
                 }
             }
+            writer.writeNext(convertListOfStringsToArray(answersList));
         }
 
         writer.close();
@@ -87,7 +92,8 @@ class MailSenderServiceImpl implements MailSenderService {
                 break;
         }
 
-        sendEmail(to, mailContent, mailType, language, file);
+        sendEmail(to, mailContent, mailType, language, file, fileName);
+        file.delete();
     }
 
     @Override
@@ -109,7 +115,7 @@ class MailSenderServiceImpl implements MailSenderService {
     @Override
     public void sendEmail(final String to, final String content,
                           final MailType mailType, Language language,
-                          final File file) {
+                          final File file, final String fileName) {
         try {
             MimeMessage mail = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
@@ -117,7 +123,7 @@ class MailSenderServiceImpl implements MailSenderService {
             helper.setFrom(mailSender);
             helper.setSubject(chooseMailSubject(mailType, language));
             helper.setText(content, true);
-            helper.addAttachment("list.csv", file);
+            helper.addAttachment(fileName, file);
             javaMailSender.send(mail);
         } catch (MessagingException ex) {
             ex.printStackTrace();
@@ -176,5 +182,24 @@ class MailSenderServiceImpl implements MailSenderService {
             default:
                 return ACTIVATION_SUBJECT_EN;
         }
+    }
+
+    private String[] getAnswersFieldsNames(Collection<Answer> answers) {
+        ArrayList<String> fieldsNames = new ArrayList<>();
+        Optional<Answer> userAnswer = answers.stream().findFirst();
+        if (userAnswer.isPresent()) {
+            for (Answer answer : userAnswer.get().getChilds()) {
+                if (!TypeClass.GROUP.equals(answer.getScheme().getType())) {
+                    fieldsNames.add(answer.getScheme().getName());
+                }
+            }
+        }
+
+        return convertListOfStringsToArray(fieldsNames);
+    }
+
+    private String[] convertListOfStringsToArray(ArrayList<String> stockList) {
+        String[] stockArr = new String[stockList.size()];
+        return stockList.toArray(stockArr);
     }
 }

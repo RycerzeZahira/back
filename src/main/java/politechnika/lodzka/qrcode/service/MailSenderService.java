@@ -9,7 +9,7 @@ import java.io.IOException;
 public interface MailSenderService {
     void sendEmail(String to, String content, MailType mailType, Language language);
 
-    void sendEmail(String to, String content, MailType mailType, Language language, File file);
+    void sendEmail(String to, String content, MailType mailType, Language language, File file, String fileName);
 
     String createEmailContent(String header, String title, String description, String template);
 
