@@ -8,12 +8,16 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import politechnika.lodzka.qrcode.exception.NotOwnerException;
+import politechnika.lodzka.qrcode.exception.UserNotFoundException;
 import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.Language;
 import politechnika.lodzka.qrcode.model.MailType;
 import politechnika.lodzka.qrcode.model.scheme.Answer;
 import politechnika.lodzka.qrcode.model.scheme.TypeClass;
+import politechnika.lodzka.qrcode.model.user.User;
 import politechnika.lodzka.qrcode.repository.AnswersRepository;
+import politechnika.lodzka.qrcode.repository.UserRepository;
 import politechnika.lodzka.qrcode.service.FormService;
 import politechnika.lodzka.qrcode.service.MailSenderService;
 
@@ -39,21 +43,29 @@ class MailSenderServiceImpl implements MailSenderService {
     private final TemplateEngine templateEngine;
     private final FormService formService;
     private final AnswersRepository answersRepository;
+    private final UserRepository userRepository;
 
     @Value("${spring.mail.username}")
     private String mailSender;
 
-    public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine, @Lazy FormService formService, AnswersRepository answersRepository) {
+    public MailSenderServiceImpl(JavaMailSender javaMailSender, TemplateEngine templateEngine,
+                                 @Lazy FormService formService, AnswersRepository answersRepository, UserRepository userRepository) {
         this.javaMailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.formService = formService;
         this.answersRepository = answersRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void sendListEmail(String to, String formCode, MailType mailType, Language language) throws IOException {
         Collection<Answer> answers = answersRepository.findAnswerByFormCode(formCode);
         Form form = formService.findByCode(formCode);
+        User user = userRepository.getUserByEmail(to).orElseThrow(() -> new UserNotFoundException("Could not find user"));
+
+        if (user != form.getGroup().getModerator()) {
+            throw new NotOwnerException(user, form.getGroup().toString());
+        }
 
         String fileName = form.getRoot().getName() + ".csv";
         File file = new File(fileName);
