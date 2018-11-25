@@ -90,6 +90,12 @@ class GroupServiceImpl implements GroupService {
         return false;
     }
 
+    @Override
+    public Collection<Group> getPublicGroupsWithoutMe() {
+        User user = authService.getCurrentUser();
+        return repository.findGroupByPublicGroupIsTrueAndUsersIsNotContainingAndModeratorIsNot(user, user);
+    }
+
     private Group getModeratorGroup(String group) {
         User moderator = authService.getCurrentUser();
         return moderator.getModeratedGroups().stream().filter(moderatedGroup -> moderatedGroup.getCode().equals(group)).findFirst().orElseThrow(() -> new NotOwnerException(moderator, group));

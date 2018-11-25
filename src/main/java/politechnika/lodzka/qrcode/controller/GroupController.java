@@ -69,4 +69,9 @@ public class GroupController {
         }
         return ResponseEntity.ok("Group is not public");
     }
+
+    @GetMapping(value = "/getPublicGroupsWithoutMe")
+    public ResponseEntity getPublicGroupsWithoutMe() {
+        return ResponseEntity.ok(service.getPublicGroupsWithoutMe());
+    }
 }

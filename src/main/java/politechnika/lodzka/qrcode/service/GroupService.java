@@ -20,4 +20,6 @@ public interface GroupService {
     void remove(String code);
 
     boolean addMyselfToGroupByFormCode(String formCode);
+
+    Collection<Group> getPublicGroupsWithoutMe();
 }

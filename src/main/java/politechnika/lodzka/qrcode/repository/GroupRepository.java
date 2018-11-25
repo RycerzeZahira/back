@@ -10,6 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
+    Collection<Group> findGroupByPublicGroupIsTrueAndUsersIsNotContainingAndModeratorIsNot(User user, User moderator);
+
     Optional<Group> findByCode(String code);
+
     Collection<Group> findByModeratorOrUsersContaining(User moderator, User me);
 }
