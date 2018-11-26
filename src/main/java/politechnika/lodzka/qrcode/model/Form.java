@@ -1,5 +1,6 @@
 package politechnika.lodzka.qrcode.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
@@ -21,7 +22,7 @@ import java.util.Date;
 @Table(name = "FORM_T")
 public class Form extends BaseEntity implements Serializable {
 
-    @JsonManagedReference
+    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")
     private Group group;

@@ -3,7 +3,9 @@ package politechnika.lodzka.qrcode.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import politechnika.lodzka.qrcode.controller.vm.GroupVM;
 import politechnika.lodzka.qrcode.exception.GroupNotFoundException;
+import politechnika.lodzka.qrcode.model.Group;
 import politechnika.lodzka.qrcode.model.request.CreateGroupRequest;
 import politechnika.lodzka.qrcode.repository.GroupRepository;
 import politechnika.lodzka.qrcode.service.GroupService;
@@ -11,6 +13,7 @@ import politechnika.lodzka.qrcode.service.GroupService;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/group")
@@ -31,7 +34,7 @@ public class GroupController {
 
     @GetMapping(value = "/{code}")
     public ResponseEntity getGroup(@PathVariable String code) {
-        return ResponseEntity.ok(repository.findByCode(code).orElseThrow(() -> new GroupNotFoundException(code)));
+        return ResponseEntity.ok(toVM(repository.findByCode(code).orElseThrow(() -> new GroupNotFoundException(code))));
     }
 
     @GetMapping(value = "/")
@@ -72,6 +75,10 @@ public class GroupController {
 
     @GetMapping(value = "/getPublicGroupsWithoutMe")
     public ResponseEntity getPublicGroupsWithoutMe() {
-        return ResponseEntity.ok(service.getPublicGroupsWithoutMe());
+        return ResponseEntity.ok(service.getPublicGroupsWithoutMe().stream().map(this::toVM).collect(Collectors.toList()));
+    }
+
+    private GroupVM toVM(Group group) {
+        return new GroupVM(group.getModerator(), group.getForms(), group.getName(), group.isPublicGroup(), Long.valueOf(group.getUsers().size()), group.getCode());
     }
 }
