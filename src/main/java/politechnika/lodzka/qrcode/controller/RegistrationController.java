@@ -51,11 +51,11 @@ public class RegistrationController {
     @GetMapping(value = "/activate/{token}")
     public String userActivation(final @PathVariable("token") String token, WebRequest request) {
         String lang = request.getLocale().getLanguage();
-        if (tokenService.isTokenExpired(token)) {
-            return new StringBuilder().append("redirect:/view/expiredToken?lang=").append(lang).toString();
-        }
 
         try {
+            if (tokenService.isTokenExpired(token)) {
+                return new StringBuilder().append("redirect:/view/expiredToken?lang=").append(lang).toString();
+            }
             registrationService.activateUser(token);
         } catch (Exception ex) {
             return new StringBuilder().append("redirect:/view/failure?lang=").append(lang).toString();

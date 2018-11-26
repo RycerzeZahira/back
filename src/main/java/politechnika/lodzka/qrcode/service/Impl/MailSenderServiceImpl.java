@@ -199,13 +199,13 @@ class MailSenderServiceImpl implements MailSenderService {
     private String createListEmailContent(Language language, String to) {
         switch (language) {
             case EN:
-                return createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
+                return createListEmail(new StringBuilder().append("Hello ").append(to, 0, to.indexOf("@")).append("!").toString(),
                         "You can find your list in the attachment.");
             case PL:
-                return createListEmail(new StringBuilder().append("Witaj").append(to, 0, to.indexOf("@")).append("!").toString(),
+                return createListEmail(new StringBuilder().append("Witaj ").append(to, 0, to.indexOf("@")).append("!").toString(),
                         "W załączniku znajduje się Twoja lista.");
             default:
-                return createListEmail(new StringBuilder().append("Hello").append(to, 0, to.indexOf("@")).append("!").toString(),
+                return createListEmail(new StringBuilder().append("Hello ").append(to, 0, to.indexOf("@")).append("!").toString(),
                         "You can find your list in the attachment.");
         }
     }
