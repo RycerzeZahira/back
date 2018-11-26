@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface FormRepository extends JpaRepository<Form, Long> {
-    Optional<Form> findByCode(String code);
+    Optional<Form> findFormByCode(String code);
     Collection<Form> findByGroupCode(String code);
     Collection<Form> findByGroup_UsersContainingOrGroup_Moderator(User user, User moderator);
 }

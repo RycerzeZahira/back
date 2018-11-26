@@ -60,7 +60,7 @@ class FormServiceImpl implements FormService {
     }
 
     public void saveAnswer(SaveAnswersRequest request) {
-        Form form = repository.findByCode(request.getFormCode()).orElseThrow(() -> new FormNotFoundException(request.getFormCode()));
+        Form form = repository.findFormByCode(request.getFormCode()).orElseThrow(() -> new FormNotFoundException(request.getFormCode()));
         User user = authService.getCurrentUser();
 
         if (!form.getGroup().getUsers().contains(user)) {
@@ -98,7 +98,7 @@ class FormServiceImpl implements FormService {
 
     @Override
     public Form findByCode(String code) {
-      return repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code));
+      return repository.findFormByCode(code).orElseThrow(() -> new FormNotFoundException(code));
     }
 
     public void clone(CloneFormRequest cloneFormRequest) {
@@ -119,7 +119,7 @@ class FormServiceImpl implements FormService {
     }
 
     public Form findFormByCode(String code) {
-        return repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code));
+        return repository.findFormByCode(code).orElseThrow(() -> new FormNotFoundException(code));
     }
 
     private AnswerResponse assemblyAnswer(Answer answer) {

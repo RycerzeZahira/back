@@ -39,7 +39,7 @@ public class FormController {
 
     @GetMapping(value = "/{code}")
     public ResponseEntity getSchemeForm(@PathVariable String code) {
-        return ResponseEntity.ok(repository.findByCode(code).orElseThrow(() -> new FormNotFoundException(code)));
+        return ResponseEntity.ok(repository.findFormByCode(code).orElseThrow(() -> new FormNotFoundException(code)));
     }
 
     @GetMapping(value = "/group/{code}")
