@@ -1,6 +1,8 @@
 package politechnika.lodzka.qrcode.model.scheme;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Data;
@@ -22,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 @Entity
 @Table(name = "ANSWER_T")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Answer extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
@@ -40,26 +43,33 @@ public class Answer extends BaseEntity {
     @OneToMany(mappedBy = "parent")
     private Collection<Answer> childs;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")
     private Answer parent;
 
+    @JsonIgnore
     @Column(name = "STRING_VALUE")
     private String stringValue;
 
+    @JsonIgnore
     @Column(name = "BOOlEAN_VALUE")
     private Boolean booleanValue;
 
+    @JsonIgnore
     @Column(name = "LONG_VALUE")
     private Long longValue;
 
+    @JsonIgnore
     @Column(name = "DOUBLE_VALUE")
     private Double doubleValue;
 
+    @JsonIgnore
     @Column(name = "DATE_VALUE")
     private Date dateValue;
 
+    @JsonIgnore
     @Column(name = "OBJECT_ID_VALUE")
     private Long objectIdValue;
 
@@ -78,7 +88,7 @@ public class Answer extends BaseEntity {
         } else if (scheme.isObjectValue()) {
             return this.objectIdValue;
         }
-        throw new TypeException("No class type defined: " + clazz.getName());
+        return null;
     }
 
     public void setValue(Object value) {
@@ -112,6 +122,7 @@ public class Answer extends BaseEntity {
     }
 
     @Transient
+    @JsonIgnore
     public String getParentCode() {
         return this.getParent().getScheme().getCode();
     }
