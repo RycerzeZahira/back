@@ -3,7 +3,7 @@ package politechnika.lodzka.qrcode.exception;
 import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.user.User;
 
-public class CannotDuplicateAnswerException extends AppException {
+public class CannotDuplicateAnswerException extends AbstractBadRequestException {
     public CannotDuplicateAnswerException(User user, Form form) {
         super(new StringBuilder()
                 .append("The user: ")
