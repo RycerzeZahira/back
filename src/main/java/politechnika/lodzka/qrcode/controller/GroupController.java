@@ -68,7 +68,7 @@ public class GroupController {
     @GetMapping(value = "/addMyselfToGroupByFormCode/{formCode}")
     public ResponseEntity addMyselfToGroupByFormCode(@PathVariable @NotBlank String formCode) {
         if (service.addMyselfToGroupByFormCode(formCode)) {
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok("Group is not public");
     }
