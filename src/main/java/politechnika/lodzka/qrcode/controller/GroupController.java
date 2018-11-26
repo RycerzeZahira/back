@@ -42,12 +42,12 @@ public class GroupController {
         return ResponseEntity.ok(service.getCurrentUserGroups());
     }
 
-    @GetMapping(value = "/addUser/{groupCode}/{email}")
-    public ResponseEntity addUserToGroup(@PathVariable @NotBlank String groupCode, @PathVariable @Email String email){
-        if (service.addUserToGroup(groupCode, email)) {
-            return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    @GetMapping(value = "/addUser/{groupCode}")
+    public ResponseEntity addUserToGroup(@PathVariable @NotBlank String groupCode){
+        if (service.addUserToGroupByGroupCode(groupCode)) {
+            return ResponseEntity.ok(HttpStatus.OK);
         } else {
-            return ResponseEntity.badRequest().body("User already is in the group");
+            return ResponseEntity.badRequest().body("User already in the group");
         }
     }
 

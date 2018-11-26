@@ -3,6 +3,7 @@ package politechnika.lodzka.qrcode.service.Impl;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import politechnika.lodzka.qrcode.Utils;
+import politechnika.lodzka.qrcode.exception.GroupNotFoundException;
 import politechnika.lodzka.qrcode.exception.NotOwnerException;
 import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.Group;
@@ -47,11 +48,11 @@ class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean addUserToGroup(String group, String email) {
-        Group moderatorGroup = getModeratorGroup(group);
-        User user = getUser(email);
-        if (moderatorGroup.getUsers().add(user)) {
-            repository.save(moderatorGroup);
+    public boolean addUserToGroupByGroupCode(String group) {
+        Group chosenGroup = repository.findByCode(group).orElseThrow(() -> new GroupNotFoundException("Group not found"));
+        if (chosenGroup.isPublicGroup() && !chosenGroup.getUsers().contains(authService.getCurrentUser())) {
+            chosenGroup.getUsers().add(authService.getCurrentUser());
+            repository.save(chosenGroup);
             return true;
         }
         return false;
