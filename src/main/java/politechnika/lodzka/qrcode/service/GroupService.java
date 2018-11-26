@@ -11,7 +11,7 @@ public interface GroupService {
 
     Collection<Group> getCurrentUserGroups();
 
-    boolean addUserToGroup(String group, String email);
+    boolean addUserToGroupByGroupCode(String group);
 
     boolean removeUserFromGroup(String group, String email);
 
