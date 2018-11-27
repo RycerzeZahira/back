@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.util.concurrent.AtomicDouble;
 import politechnika.lodzka.qrcode.model.scheme.TypeClass;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ElementRequestDeserialize extends StdDeserializer<ElementRequest> {
 
@@ -61,13 +64,13 @@ public class ElementRequestDeserialize extends StdDeserializer<ElementRequest> {
                 result.setElement(object.asText());
                 break;
             case BOOLEAN:
-                result.setElement(object.asBoolean());
+                result.setElement(new AtomicBoolean(object.asBoolean()));
                 break;
             case LONG:
-                result.setElement(object.asLong());
+                result.setElement(new AtomicLong(object.asLong()));
                 break;
             case DOUBLE:
-                result.setElement(object.asDouble());
+                result.setElement(new AtomicDouble(object.asDouble()));
                 break;
 //            case OBJECT:
 ////                result.setElement(object.asLong());

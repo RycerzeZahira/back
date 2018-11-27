@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Data;
 import politechnika.lodzka.qrcode.exception.AppParseException;
-import politechnika.lodzka.qrcode.exception.scheme.TypeException;
 import politechnika.lodzka.qrcode.model.BaseEntity;
 import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.user.User;
@@ -78,11 +77,11 @@ public class Answer extends BaseEntity {
         if (clazz == String.class) {
             return this.stringValue;
         } else if (clazz == AtomicLong.class) {
-            return this.longValue;
+            return new AtomicLong(this.longValue);
         } else if (clazz == AtomicBoolean.class) {
-            return this.booleanValue;
+            return new AtomicBoolean(this.booleanValue);
         } else if (clazz == AtomicDouble.class) {
-            return this.doubleValue;
+            return new AtomicDouble(this.doubleValue);
         } else if (clazz == Date.class) {
             return this.dateValue;
         } else if (scheme.isObjectValue()) {
@@ -99,13 +98,13 @@ public class Answer extends BaseEntity {
                     this.stringValue = (String) value;
                     break;
                 case BOOLEAN:
-                    this.booleanValue = (Boolean) value;
+                    this.booleanValue = ((AtomicBoolean) value).get();
                     break;
                 case LONG:
-                    this.longValue = (Long) value;
+                    this.longValue = ((AtomicLong) value).longValue();
                     break;
                 case DOUBLE:
-                    this.doubleValue = (Double) value;
+                    this.doubleValue = ((AtomicDouble) value).doubleValue();
                     break;
                 case GROUP:
                     break;
