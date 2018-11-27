@@ -2,9 +2,12 @@ package politechnika.lodzka.qrcode.service.Impl;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import politechnika.lodzka.qrcode.Utils;
 import politechnika.lodzka.qrcode.exception.GroupNotFoundException;
 import politechnika.lodzka.qrcode.exception.NotOwnerException;
+import politechnika.lodzka.qrcode.exception.NotPublicGroupException;
+import politechnika.lodzka.qrcode.exception.UserAlreadyInGroupException;
 import politechnika.lodzka.qrcode.model.Form;
 import politechnika.lodzka.qrcode.model.Group;
 import politechnika.lodzka.qrcode.model.request.CreateGroupRequest;
@@ -48,14 +51,18 @@ class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean addUserToGroupByGroupCode(String group) {
+    @Transactional
+    public void addUserToGroupByGroupCode(String group) {
         Group chosenGroup = repository.findByCode(group).orElseThrow(() -> new GroupNotFoundException("Group not found"));
-        if (chosenGroup.isPublicGroup() && !chosenGroup.getUsers().contains(authService.getCurrentUser())) {
-            chosenGroup.getUsers().add(authService.getCurrentUser());
-            repository.save(chosenGroup);
-            return true;
+        if (chosenGroup.getUsers().contains(authService.getCurrentUser())) {
+            throw new UserAlreadyInGroupException("User is already in group");
         }
-        return false;
+
+        if (!chosenGroup.isPublicGroup()) {
+            throw new NotPublicGroupException("Group is not public");
+        }
+
+        chosenGroup.getUsers().add(authService.getCurrentUser());
     }
 
     @Override

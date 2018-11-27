@@ -25,7 +25,7 @@ public class Group extends BaseEntity implements Serializable {
     private User moderator;
 
     @JsonBackReference
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "GROUP_USER_T",
             joinColumns = {@JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")},

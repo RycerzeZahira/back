@@ -44,11 +44,9 @@ public class GroupController {
 
     @GetMapping(value = "/addUser/{groupCode}")
     public ResponseEntity addUserToGroup(@PathVariable @NotBlank String groupCode){
-        if (service.addUserToGroupByGroupCode(groupCode)) {
-            return ResponseEntity.ok(HttpStatus.OK);
-        } else {
-            return ResponseEntity.badRequest().body("User already in the group");
-        }
+        service.addUserToGroupByGroupCode(groupCode);
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping(value = "/removeUser/{groupCode}/{email}")
