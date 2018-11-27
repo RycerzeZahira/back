@@ -71,7 +71,7 @@ class MailSenderServiceImpl implements MailSenderService {
         File file = new File(fileName);
         FileWriter outputFile = new FileWriter(file);
 
-        CSVWriter writer = new CSVWriter(outputFile, '\t', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+        CSVWriter writer = new CSVWriter(outputFile, ';', CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         writeDataToFile(writer, form, answers);
         writer.close();
 
